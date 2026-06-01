@@ -341,6 +341,18 @@ function spawnParticles() {
 /* ══════════════════════════════════════════════════
    TRANSITIONS
 ══════════════════════════════════════════════════ */
+function showUnlockScreenDirect() {
+  // Instantly show the unlock screen with no transition race.
+  // Used when the page loads AFTER the birthday has already passed.
+  const cs = el("countdown-screen");
+  const us = el("unlock-screen");
+  if (cs) cs.classList.add("hidden");
+  if (us) {
+    us.classList.remove("hidden", "pre-visible");
+    us.classList.add("is-visible");
+  }
+}
+
 function transitionToUnlock() {
   const cs = el("countdown-screen");
   const us = el("unlock-screen");
@@ -787,8 +799,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Countdown
   spawnParticles();
   setDailyMessage();
-  updateCountdown();
-  countdownInterval = setInterval(() => { updateCountdown(); tickGlow(); }, 1000);
+
+  // If the birthday has already passed, skip straight to the unlock screen
+  // instead of racing a fade transition during initial page paint.
+  const diffAtBoot = getBirthdayMs() - Date.now();
+  if (diffAtBoot <= 0) {
+    countdownDone = true;
+    showUnlockScreenDirect();
+  } else {
+    updateCountdown();
+    countdownInterval = setInterval(() => { updateCountdown(); tickGlow(); }, 1000);
+  }
 
   // 3. Interactions
   initParallax();
