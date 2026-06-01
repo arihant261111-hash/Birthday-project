@@ -342,8 +342,6 @@ function spawnParticles() {
    TRANSITIONS
 ══════════════════════════════════════════════════ */
 function showUnlockScreenDirect() {
-  // Instantly show the unlock screen with no transition race.
-  // Used when the page loads AFTER the birthday has already passed.
   const cs = el("countdown-screen");
   const us = el("unlock-screen");
   if (cs) cs.classList.add("hidden");
@@ -357,20 +355,14 @@ function transitionToUnlock() {
   const cs = el("countdown-screen");
   const us = el("unlock-screen");
   if (!cs || !us) return;
-
-  // Step 1: make unlock screen invisible but in the DOM (no display:none)
   us.classList.remove("hidden");
-  us.classList.add("pre-visible");   // opacity:0, no transition yet
-
-  // Step 2: fade out countdown
+  us.classList.add("pre-visible");
   cs.classList.add("fade-out");
-
-  // Step 3: after countdown gone, fade unlock in using CSS class only
   setTimeout(() => {
     cs.classList.add("hidden");
-    void us.offsetHeight; // force reflow so transition fires
+    void us.offsetHeight;
     us.classList.remove("pre-visible");
-    us.classList.add("is-visible");   // opacity:1 with transition
+    us.classList.add("is-visible");
   }, 900);
 }
 
@@ -556,7 +548,7 @@ function initScrollReveal() {
     entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("is-visible"); }),
     { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
   );
-  document.querySelectorAll(".reveal-up, .reveal-left, .reveal-right, .section--languages").forEach(e => obs.observe(e));
+  document.querySelectorAll(".reveal-up, .reveal-left, .reveal-right").forEach(e => obs.observe(e));
 }
 
 function initFourWords() {
@@ -588,12 +580,12 @@ function initFourWords() {
           words.forEach((word, i) => {
             const t = setTimeout(() => {
               word.classList.add("is-visible");
-            }, i * 500); // 500ms between each word
+            }, i * 220); // 220ms between each word
             pendingTimers.push(t);
           });
 
           // Conclusion fades in after all words
-          const conclusionDelay = words.length * 500 + 500;
+          const conclusionDelay = words.length * 220 + 300;
           const tc = setTimeout(() => {
             conclusion?.classList.add("is-visible");
           }, conclusionDelay);
@@ -725,7 +717,7 @@ function initAchievements() {
         setTimeout(() => {
           const allVisible = [...words].every(w => w.classList.contains("is-visible"));
           if (allVisible) { wordAchTriggered = true; earnAchievement("collector"); }
-        }, words.length * 500 + 600);
+        }, words.length * 220 + 400);
       }
     }, { threshold: 0.5 }).observe(wordsSection);
   }
@@ -790,7 +782,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLanguageCards();
   renderPolaroids();
   renderTimeline();
-  initTimelineCarousel();
   renderAccordion();
   renderAudioCards();
   renderLittleThings();
@@ -799,17 +790,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Countdown
   spawnParticles();
   setDailyMessage();
-
-  // If the birthday has already passed, skip straight to the unlock screen
-  // instead of racing a fade transition during initial page paint.
-  const diffAtBoot = getBirthdayMs() - Date.now();
-  if (diffAtBoot <= 0) {
-    countdownDone = true;
-    showUnlockScreenDirect();
-  } else {
-    updateCountdown();
-    countdownInterval = setInterval(() => { updateCountdown(); tickGlow(); }, 1000);
-  }
+  updateCountdown();
+  countdownInterval = setInterval(() => { updateCountdown(); tickGlow(); }, 1000);
 
   // 3. Interactions
   initParallax();

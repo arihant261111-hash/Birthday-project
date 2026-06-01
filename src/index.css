@@ -508,13 +508,6 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
    ═══════════════════════════════════════════════════════════════ */
 .section--languages {
   background: transparent;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.section--languages.is-visible {
-  opacity: 1;
-  transform: none;
 }
 
 .lang-carousel-wrap {
@@ -854,7 +847,6 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   position: relative;
   margin-bottom: 3.5rem;
   display: flex;
-  flex-direction: row;
   align-items: flex-start;
 }
 
@@ -1243,7 +1235,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   color: transparent;
   -webkit-text-stroke: 1px rgba(212,197,232,0.2);
   letter-spacing: 0.05em;
-  transition: all 0.9s ease;
+  transition: all 0.6s ease;
   transform: translateY(100%);
   opacity: 0;
 }
@@ -1255,9 +1247,9 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   text-shadow: 0 0 60px var(--glow);
 }
 .word-reveal--1 .big-word.is-visible { transition-delay: 0s; }
-.word-reveal--2 .big-word.is-visible { transition-delay: 0.4s; }
-.word-reveal--3 .big-word.is-visible { transition-delay: 0.8s; }
-.word-reveal--4 .big-word.is-visible { transition-delay: 1.2s; }
+.word-reveal--2 .big-word.is-visible { transition-delay: 0.12s; }
+.word-reveal--3 .big-word.is-visible { transition-delay: 0.24s; }
+.word-reveal--4 .big-word.is-visible { transition-delay: 0.36s; }
 
 .words-conclusion {
   margin-top: 3rem;
@@ -1477,8 +1469,7 @@ button, [role="button"], .polaroid, .accordion-btn,
 
   /* ── Hero ── */
   /* Float flowers overlap text on mobile — hide them */
-  .hero-peony  { width: 80px; height: 80px; top: 10px; right: 10px; }
-  .hero-gerbera { width: 60px; height: 60px; bottom: 10px; left: 10px; }
+  .hero-peony, .hero-gerbera { display: none; }
 
   /* ── Language carousel ── */
   /* Arrow buttons are now properly outside the clip track, but on mobile
@@ -1487,57 +1478,19 @@ button, [role="button"], .polaroid, .accordion-btn,
   .lang-card-inner { padding: 1.8rem 1.4rem; }
   .lang-dots { margin-top: 1.2rem; }
 
-  /* ── Timeline — swipeable carousel on mobile ── */
-  .timeline::before { display: none; }
-  .timeline {
-    display: flex;
-    flex-direction: row;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 1rem;
-    padding: 0 1.5rem 1.5rem;
-    margin: 0;
-    max-width: 100%;
-    cursor: grab;
-  }
-  .timeline::-webkit-scrollbar { display: none; }
-  .timeline.is-dragging { cursor: grabbing; }
+  /* ── Timeline — stack vertically ── */
+  .timeline::before { left: 14px; }
+  .timeline { padding: 0; }
   .timeline-item,
-  .timeline-item:nth-child(odd),
   .timeline-item:nth-child(even) {
-    flex: 0 0 80vw;
-    max-width: 320px;
-    scroll-snap-align: center;
-    flex-direction: column !important;
-    padding: 0 !important;
-    margin-bottom: 0;
-    opacity: 1 !important;
-    transform: none !important;
+    flex-direction: column;
+    padding-right: 0;
+    padding-left: 36px;
   }
-  .timeline-dot { display: none; }
+  .timeline-dot          { left: 14px; top: 16px; }
+  .timeline-dot--current { top: 14px; }
   .timeline-card { width: 100%; }
-  .timeline-photo { height: 140px; }
-  /* Progress dots for timeline carousel */
-  .timeline-dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 1.2rem;
-  }
-  .timeline-dot-pip {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: rgba(123,94,167,0.3);
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  .timeline-dot-pip.is-active {
-    background: var(--purple-light);
-    transform: scale(1.3);
-  }
+  .timeline-photo { height: 100px; }
 
   /* ── Accordion ── */
   .accordion-body p { padding: 0 0.5rem 1.2rem 3rem; }
@@ -1552,7 +1505,7 @@ button, [role="button"], .polaroid, .accordion-btn,
 
   /* ── Final letter ── */
   /* Hide background florals — they cause horizontal overflow on mobile */
-  .final-floral { width: 70px; opacity: 0.5; }
+  .final-floral { display: none; }
   .final-letter-wrap { padding: 2rem 1.4rem; }
   .final-letter-footer { flex-direction: column; align-items: flex-start; }
   .final-date-text { text-align: left; }
@@ -1571,12 +1524,10 @@ button, [role="button"], .polaroid, .accordion-btn,
 
   /* ── Countdown ── */
   .countdown-unit { min-width: 48px; }
-  .float-flower--3, .float-flower--4, .float-flower--5 { display: none; }
-  .float-flower--1 { font-size: 1.2rem; }
-  .float-flower--2 { font-size: 0.9rem; }
+  .float-flower   { display: none; } /* de-clutter tiny screens */
 
   /* ── Unlock ── */
-  .unlock-flower { width: 55px; opacity: 0.6; }
+  .unlock-flower { display: none; } /* give content room to breathe */
 
   /* ── Polaroids ── */
   .polaroid      { width: clamp(145px, 42vw, 185px); }
