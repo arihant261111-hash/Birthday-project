@@ -508,6 +508,13 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
    ═══════════════════════════════════════════════════════════════ */
 .section--languages {
   background: transparent;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.section--languages.is-visible {
+  opacity: 1;
+  transform: none;
 }
 
 .lang-carousel-wrap {
@@ -847,6 +854,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   position: relative;
   margin-bottom: 3.5rem;
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
 }
 
@@ -1235,7 +1243,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   color: transparent;
   -webkit-text-stroke: 1px rgba(212,197,232,0.2);
   letter-spacing: 0.05em;
-  transition: all 0.6s ease;
+  transition: all 0.9s ease;
   transform: translateY(100%);
   opacity: 0;
 }
@@ -1247,9 +1255,9 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   text-shadow: 0 0 60px var(--glow);
 }
 .word-reveal--1 .big-word.is-visible { transition-delay: 0s; }
-.word-reveal--2 .big-word.is-visible { transition-delay: 0.12s; }
-.word-reveal--3 .big-word.is-visible { transition-delay: 0.24s; }
-.word-reveal--4 .big-word.is-visible { transition-delay: 0.36s; }
+.word-reveal--2 .big-word.is-visible { transition-delay: 0.4s; }
+.word-reveal--3 .big-word.is-visible { transition-delay: 0.8s; }
+.word-reveal--4 .big-word.is-visible { transition-delay: 1.2s; }
 
 .words-conclusion {
   margin-top: 3rem;
