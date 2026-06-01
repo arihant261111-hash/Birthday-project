@@ -342,35 +342,24 @@ function spawnParticles() {
    TRANSITIONS
 ══════════════════════════════════════════════════ */
 function transitionToUnlock() {
-  // BUG 3 FIX: Guaranteed flash-free cross-screen fade on mobile.
-  // Step 1 — pre-position unlock screen: display it but keep it invisible
-  //          BEFORE the countdown fades, so the browser has time to paint it.
-  // Step 2 — fade out countdown (CSS handles this via .fade-out class).
-  // Step 3 — once countdown is gone, fade in unlock screen via CSS transition.
   const cs = el("countdown-screen");
   const us = el("unlock-screen");
   if (!cs || !us) return;
 
-  // Pre-position: make visible in the layout but fully transparent.
-  // Use visibility+opacity rather than display so CSS transition works.
-  us.style.cssText = "opacity:0;visibility:visible;position:fixed;inset:0;transition:opacity 0.9s ease;";
+  // Step 1: make unlock screen invisible but in the DOM (no display:none)
   us.classList.remove("hidden");
+  us.classList.add("pre-visible");   // opacity:0, no transition yet
 
-  // Trigger countdown fade-out
+  // Step 2: fade out countdown
   cs.classList.add("fade-out");
 
-  // After countdown fades (900ms), hide it and fade unlock in
+  // Step 3: after countdown gone, fade unlock in using CSS class only
   setTimeout(() => {
     cs.classList.add("hidden");
-    // Force a reflow so the transition triggers cleanly
-    void us.offsetHeight;
-    us.style.opacity = "1";
+    void us.offsetHeight; // force reflow so transition fires
+    us.classList.remove("pre-visible");
+    us.classList.add("is-visible");   // opacity:1 with transition
   }, 900);
-
-  // Clean up inline styles once unlock is fully visible
-  setTimeout(() => {
-    us.style.cssText = "";
-  }, 1900);
 }
 
 function transitionToMain() {
