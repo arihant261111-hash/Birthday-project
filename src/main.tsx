@@ -789,6 +789,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLanguageCards();
   renderPolaroids();
   renderTimeline();
+  initTimelineCarousel();
   renderAccordion();
   renderAudioCards();
   renderLittleThings();
