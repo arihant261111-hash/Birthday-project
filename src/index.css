@@ -1490,10 +1490,12 @@ button, [role="button"], .polaroid, .accordion-btn,
   .timeline::before { left: 14px; }
   .timeline { padding: 0; }
   .timeline-item,
+  .timeline-item:nth-child(odd),
   .timeline-item:nth-child(even) {
     flex-direction: column;
-    padding-right: 0;
-    padding-left: 36px;
+    padding-right: 0 !important;
+    padding-left: 36px !important;
+    width: 100%;
   }
   .timeline-dot          { left: 14px; top: 16px; }
   .timeline-dot--current { top: 14px; }
