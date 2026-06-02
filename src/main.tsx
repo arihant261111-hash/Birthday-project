@@ -548,7 +548,7 @@ function initScrollReveal() {
     entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("is-visible"); }),
     { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
   );
-  document.querySelectorAll(".reveal-up, .reveal-left, .reveal-right").forEach(e => obs.observe(e));
+  document.querySelectorAll(".reveal-up, .reveal-left, .reveal-right, .section--languages").forEach(e => obs.observe(e));
 }
 
 function initFourWords() {

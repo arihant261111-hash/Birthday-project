@@ -461,17 +461,19 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   position: absolute;
   top: 8%;
   right: 5%;
-  width: clamp(80px, 12vw, 160px);
+  width: clamp(100px, 14vw, 180px);
   pointer-events: none;
   animation: drift 8s ease-in-out infinite;
+  overflow: visible;
 }
 .hero-gerbera {
   position: absolute;
   bottom: 10%;
   left: 4%;
-  width: clamp(60px, 10vw, 120px);
+  width: clamp(80px, 12vw, 140px);
   pointer-events: none;
   animation: drift 10s ease-in-out infinite reverse;
+  overflow: visible;
 }
 @keyframes drift {
   0%, 100% { transform: translateY(0) rotate(-3deg); }
@@ -1302,10 +1304,11 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   width: clamp(160px, 24vw, 320px);
 }
 .final-floral--gerbera-right {
-  right: -40px;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: clamp(160px, 22vw, 340px);
+  width: clamp(140px, 20vw, 300px);
+  overflow: visible;
 }
 .bg-peony, .bg-gerbera { width: 100%; height: auto; }
 
@@ -1451,7 +1454,7 @@ button, [role="button"], .polaroid, .accordion-btn,
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
   .final-floral--peony-left   { left: -30px; width: clamp(120px, 20vw, 200px); }
-  .final-floral--gerbera-right { right: -30px; width: clamp(120px, 18vw, 180px); }
+  .final-floral--gerbera-right { right: 0; width: clamp(100px, 16vw, 160px); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
