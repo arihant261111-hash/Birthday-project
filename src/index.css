@@ -444,6 +444,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   padding-top: clamp(5rem, 12vw, 10rem);
   padding-bottom: clamp(5rem, 12vw, 10rem);
   background: transparent;
+  overflow: visible;
 }
 
 /* Floral divider */
@@ -508,6 +509,13 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
    ═══════════════════════════════════════════════════════════════ */
 .section--languages {
   background: transparent;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.section--languages.is-visible {
+  opacity: 1;
+  transform: none;
 }
 
 .lang-carousel-wrap {
@@ -1247,9 +1255,9 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   text-shadow: 0 0 60px var(--glow);
 }
 .word-reveal--1 .big-word.is-visible { transition-delay: 0s; }
-.word-reveal--2 .big-word.is-visible { transition-delay: 0.12s; }
-.word-reveal--3 .big-word.is-visible { transition-delay: 0.24s; }
-.word-reveal--4 .big-word.is-visible { transition-delay: 0.36s; }
+.word-reveal--2 .big-word.is-visible { transition-delay: 0.4s; }
+.word-reveal--3 .big-word.is-visible { transition-delay: 0.8s; }
+.word-reveal--4 .big-word.is-visible { transition-delay: 1.2s; }
 
 .words-conclusion {
   margin-top: 3rem;
@@ -1288,16 +1296,16 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   z-index: 0;
 }
 .final-floral--peony-left {
-  left: -80px;
+  left: -40px;
   top: 50%;
   transform: translateY(-50%);
-  width: clamp(200px, 30vw, 400px);
+  width: clamp(160px, 24vw, 320px);
 }
 .final-floral--gerbera-right {
-  right: -80px;
+  right: -40px;
   top: 50%;
   transform: translateY(-50%);
-  width: clamp(200px, 28vw, 380px);
+  width: clamp(160px, 22vw, 340px);
 }
 .bg-peony, .bg-gerbera { width: 100%; height: auto; }
 
@@ -1442,8 +1450,8 @@ button, [role="button"], .polaroid, .accordion-btn,
    TABLET (≤ 900px)
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
-  .final-floral--peony-left   { left: -100px; }
-  .final-floral--gerbera-right { right: -100px; }
+  .final-floral--peony-left   { left: -30px; width: clamp(120px, 20vw, 200px); }
+  .final-floral--gerbera-right { right: -30px; width: clamp(120px, 18vw, 180px); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1469,7 +1477,8 @@ button, [role="button"], .polaroid, .accordion-btn,
 
   /* ── Hero ── */
   /* Float flowers overlap text on mobile — hide them */
-  .hero-peony, .hero-gerbera { display: none; }
+  .hero-peony  { width: 70px; height: 70px; top: 8px; right: 8px; }
+  .hero-gerbera { width: 55px; height: 55px; bottom: 8px; left: 8px; }
 
   /* ── Language carousel ── */
   /* Arrow buttons are now properly outside the clip track, but on mobile
@@ -1505,7 +1514,7 @@ button, [role="button"], .polaroid, .accordion-btn,
 
   /* ── Final letter ── */
   /* Hide background florals — they cause horizontal overflow on mobile */
-  .final-floral { display: none; }
+  .final-floral { display: none; } /* intentionally hidden on very small screens */
   .final-letter-wrap { padding: 2rem 1.4rem; }
   .final-letter-footer { flex-direction: column; align-items: flex-start; }
   .final-date-text { text-align: left; }
@@ -1527,7 +1536,7 @@ button, [role="button"], .polaroid, .accordion-btn,
   .float-flower   { display: none; } /* de-clutter tiny screens */
 
   /* ── Unlock ── */
-  .unlock-flower { display: none; } /* give content room to breathe */
+  .unlock-flower { width: 50px; opacity: 0.55; }
 
   /* ── Polaroids ── */
   .polaroid      { width: clamp(145px, 42vw, 185px); }

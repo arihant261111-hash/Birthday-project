@@ -580,12 +580,12 @@ function initFourWords() {
           words.forEach((word, i) => {
             const t = setTimeout(() => {
               word.classList.add("is-visible");
-            }, i * 220); // 220ms between each word
+            }, i * 500); // 500ms between each word
             pendingTimers.push(t);
           });
 
           // Conclusion fades in after all words
-          const conclusionDelay = words.length * 220 + 300;
+          const conclusionDelay = words.length * 500 + 500;
           const tc = setTimeout(() => {
             conclusion?.classList.add("is-visible");
           }, conclusionDelay);
@@ -717,7 +717,7 @@ function initAchievements() {
         setTimeout(() => {
           const allVisible = [...words].every(w => w.classList.contains("is-visible"));
           if (allVisible) { wordAchTriggered = true; earnAchievement("collector"); }
-        }, words.length * 220 + 400);
+        }, words.length * 500 + 600);
       }
     }, { threshold: 0.5 }).observe(wordsSection);
   }
