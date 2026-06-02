@@ -459,21 +459,19 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
 /* Floating deco flowers */
 .hero-peony {
   position: absolute;
-  top: 8%;
-  right: 8%;
-  width: clamp(100px, 14vw, 180px);
+  top: 5%;
+  right: 2%;
+  width: clamp(120px, 16vw, 200px);
   pointer-events: none;
   animation: drift 8s ease-in-out infinite;
-  overflow: visible;
 }
 .hero-gerbera {
   position: absolute;
-  bottom: 10%;
-  left: 8%;
-  width: clamp(80px, 12vw, 140px);
+  bottom: 5%;
+  left: 2%;
+  width: clamp(120px, 16vw, 200px);
   pointer-events: none;
   animation: drift 10s ease-in-out infinite reverse;
-  overflow: visible;
 }
 @keyframes drift {
   0%, 100% { transform: translateY(0) rotate(-3deg); }
