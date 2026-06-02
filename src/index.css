@@ -460,7 +460,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
 .hero-peony {
   position: absolute;
   top: 8%;
-  right: 5%;
+  right: 8%;
   width: clamp(100px, 14vw, 180px);
   pointer-events: none;
   animation: drift 8s ease-in-out infinite;
@@ -469,7 +469,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
 .hero-gerbera {
   position: absolute;
   bottom: 10%;
-  left: 4%;
+  left: 8%;
   width: clamp(80px, 12vw, 140px);
   pointer-events: none;
   animation: drift 10s ease-in-out infinite reverse;
