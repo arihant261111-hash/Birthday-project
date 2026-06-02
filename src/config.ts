@@ -30,9 +30,9 @@ export const BIRTHDAY_AGE  = 18;
  */
 export const BIRTHDAY_DATE = {
   year:  2026,
-  month: 7,    // July
-  day:   30,   // July 30
-  hour:  0,
+  month: 6,    // July
+  day:   3,   // July 30
+  hour:  1,
   min:   0,
   sec:   0,
 };
