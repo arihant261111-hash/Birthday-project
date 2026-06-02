@@ -825,6 +825,53 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   letter-spacing: 0.03em;
 }
 
+
+/* ── Timeline lightbox variant (dark bg, no polaroid frame) ── */
+.lightbox-content--timeline .lightbox-photo {
+  background: var(--navy-card);
+  border: 1px solid rgba(123,94,167,0.35);
+  padding: 12px 12px 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px var(--glow);
+}
+.lightbox-content--timeline .lightbox-photo img {
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: contain;
+  display: block;
+}
+.lightbox-content--timeline .lightbox-placeholder {
+  aspect-ratio: 4/3;
+  font-size: clamp(5rem, 15vw, 8rem);
+}
+.lightbox-content--timeline .timeline-lb-meta {
+  margin-top: 1rem;
+  text-align: center;
+}
+.lightbox-content--timeline .timeline-lb-year {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--purple-light);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.lightbox-content--timeline .timeline-lb-event {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 600;
+  color: var(--cream);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.lightbox-content--timeline .lightbox-caption {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  color: var(--cream-dim);
+  line-height: 1.7;
+  margin-top: 0.6rem;
+  letter-spacing: 0;
+}
 /* ═══════════════════════════════════════════════════════════════
    SECTION 6 — TIMELINE
    ═══════════════════════════════════════════════════════════════ */
@@ -890,6 +937,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   overflow: hidden;
   flex: 1;
   transition: border-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
 .timeline-card:hover {
   border-color: rgba(123,94,167,0.5);
@@ -1488,19 +1536,72 @@ button, [role="button"], .polaroid, .accordion-btn,
   .lang-card-inner { padding: 1.8rem 1.4rem; }
   .lang-dots { margin-top: 1.2rem; }
 
-  /* ── Timeline — stack vertically ── */
-  .timeline::before { left: 14px; }
-  .timeline { padding: 0; }
-  .timeline-item,
-  .timeline-item:nth-child(even) {
-    flex-direction: column;
-    padding-right: 0;
-    padding-left: 36px;
+  /* ── Timeline — horizontal swipeable carousel ── */
+  .timeline::before { display: none; }
+  .timeline {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 1rem;
+    padding: 0.5rem 1.5rem 1rem;
+    margin: 1.5rem 0 0;
+    max-width: 100%;
+    cursor: grab;
   }
-  .timeline-dot          { left: 14px; top: 16px; }
-  .timeline-dot--current { top: 14px; }
-  .timeline-card { width: 100%; }
-  .timeline-photo { height: 100px; }
+  .timeline:active { cursor: grabbing; }
+  .timeline::-webkit-scrollbar { display: none; }
+  .timeline-item,
+  .timeline-item:nth-child(odd),
+  .timeline-item:nth-child(even) {
+    flex: 0 0 78vw;
+    max-width: 300px;
+    scroll-snap-align: center;
+    flex-direction: column !important;
+    padding: 0 !important;
+    margin-bottom: 0;
+    opacity: 1 !important;
+    transform: none !important;
+    cursor: pointer;
+  }
+  .timeline-dot { display: none; }
+  .timeline-card { width: 100%; cursor: pointer; }
+  .timeline-card:hover { border-color: rgba(123,94,167,0.7); box-shadow: 0 0 28px var(--glow); }
+  .timeline-photo { height: 150px; }
+  /* Tap hint on mobile cards */
+  .timeline-card::after {
+    content: 'tap to enlarge ✦';
+    display: block;
+    text-align: center;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--purple-light);
+    opacity: 0.6;
+    padding: 0.4rem 0 0.6rem;
+  }
+  /* Progress dots */
+  .timeline-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+  .timeline-dot-pip {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(123,94,167,0.3);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    padding: 0;
+  }
+  .timeline-dot-pip.is-active {
+    background: var(--purple-light);
+    transform: scale(1.35);
+  }
 
   /* ── Accordion ── */
   .accordion-body p { padding: 0 0.5rem 1.2rem 3rem; }
