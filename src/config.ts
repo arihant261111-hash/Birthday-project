@@ -29,9 +29,9 @@ export const BIRTHDAY_AGE  = 18;
  * year / month (1–12) / day / hour / minute / second
  */
 export const BIRTHDAY_DATE = {
-  year:  2024,
-  month: 12,   // ← change this to her actual birth month
-  day:   15,   // ← change this to her actual birth day
+  year:  2025,
+  month: 7,    // July
+  day:   30,   // July 30
   hour:  0,
   min:   0,
   sec:   0,
@@ -382,5 +382,5 @@ On this day, I want you to know: you are already enough. You have always been en
 Happy birthday, ${BIRTHDAY_NAME}. Thank you for existing.`,
 
   signatureLine1: "With all my love,",
-  signatureLine2: "— Your Person ✦",  // ← change to your name
+  signatureLine2: "— Ari ✦",  // ← change to your name
 };

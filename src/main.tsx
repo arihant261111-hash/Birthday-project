@@ -168,9 +168,6 @@ function renderTimeline() {
     const dot  = make("div", `timeline-dot${t.isCurrent ? " timeline-dot--current" : ""}`);
     const card = make("div", `timeline-card${t.isCurrent ? " timeline-card--current" : ""}`);
 
-    // Store index for lightbox
-    card.dataset.timelineIdx = String(i);
-
     const photoPH = `<div class="timeline-placeholder" style="background:${t.photoBg}"><span>${t.emoji}</span></div>`;
     const photoHTML = t.photo
       ? `<img src="${t.photo}" alt="${t.event}" style="width:100%;height:120px;object-fit:cover;">`
@@ -184,9 +181,7 @@ function renderTimeline() {
         <p class="timeline-text">${t.text}</p>
       </div>`;
 
-    // Restore dataset after innerHTML (innerHTML wipes it)
     card.dataset.timelineIdx = String(i);
-
     item.appendChild(dot);
     item.appendChild(card);
     wrap.appendChild(item);
@@ -194,73 +189,34 @@ function renderTimeline() {
 }
 
 /* ══════════════════════════════════════════════════
-   TIMELINE CAROUSEL (mobile swipeable)
+   TIMELINE — mobile scroll animations
 ══════════════════════════════════════════════════ */
-function initTimelineCarousel() {
-  // Only activate on mobile
+function initTimelineMobile() {
   if (window.innerWidth > 640) return;
 
-  const track = el("timelineWrap");
-  if (!track) return;
+  const items = document.querySelectorAll<HTMLElement>(".timeline-item");
+  if (!items.length) return;
 
-  const section = track.closest<HTMLElement>(".section--timeline");
-  if (!section) return;
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("is-visible");
+        obs.unobserve(e.target); // animate in once, stay visible
+      }
+    }),
+    { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+  );
 
-  const items = Array.from(track.querySelectorAll<HTMLElement>(".timeline-item"));
-  if (items.length === 0) return;
-
-  // Build progress dots
-  const dotsWrap = document.createElement("div");
-  dotsWrap.className = "timeline-dots";
-  const pips: HTMLButtonElement[] = [];
-
-  items.forEach((_, i) => {
-    const pip = document.createElement("button");
-    pip.className = `timeline-dot-pip${i === 0 ? " is-active" : ""}`;
-    pip.setAttribute("aria-label", `Go to timeline item ${i + 1}`);
-    pip.addEventListener("click", () => scrollToItem(i));
-    dotsWrap.appendChild(pip);
-    pips.push(pip);
-  });
-  section.appendChild(dotsWrap);
-
-  function updateDots() {
-    const trackLeft = track.getBoundingClientRect().left;
-    let closest = 0, minDist = Infinity;
-    items.forEach((item, i) => {
-      const dist = Math.abs(item.getBoundingClientRect().left - trackLeft);
-      if (dist < minDist) { minDist = dist; closest = i; }
-    });
-    pips.forEach((p, i) => p.classList.toggle("is-active", i === closest));
-  }
-
-  function scrollToItem(idx: number) {
-    const target = items[idx];
-    if (!target) return;
-    track.scrollTo({ left: target.offsetLeft - 24, behavior: "smooth" });
-  }
-
-  track.addEventListener("scroll", updateDots, { passive: true });
-
-  // Mouse drag support
-  let isDragging = false, startX = 0, scrollStart = 0;
-  track.addEventListener("mousedown", (e: MouseEvent) => {
-    isDragging = true; startX = e.pageX; scrollStart = track.scrollLeft;
-  });
-  window.addEventListener("mousemove", (e: MouseEvent) => {
-    if (!isDragging) return;
-    track.scrollLeft = scrollStart - (e.pageX - startX);
-  });
-  window.addEventListener("mouseup", () => { isDragging = false; });
+  items.forEach(item => obs.observe(item));
 }
 
 /* ══════════════════════════════════════════════════
-   TIMELINE LIGHTBOX (tap any card to enlarge)
+   TIMELINE LIGHTBOX — tap any card to enlarge
 ══════════════════════════════════════════════════ */
 function initTimelineLightbox() {
-  const lb    = el("lightbox");
-  const lbPh  = el<HTMLElement>("lightboxPlaceholder");
-  const lbCap = el("lightboxCaption");
+  const lb      = el("lightbox");
+  const lbPh    = el<HTMLElement>("lightboxPlaceholder");
+  const lbCap   = el("lightboxCaption");
   const lbContent = lb?.querySelector<HTMLElement>(".lightbox-content");
   if (!lb || !lbPh || !lbCap || !lbContent) return;
 
@@ -268,25 +224,21 @@ function initTimelineLightbox() {
     const t = TIMELINE[idx];
     if (!t) return;
 
-    // Switch to timeline style
     lbContent.classList.add("lightbox-content--timeline");
 
     if (t.photo) {
       lbPh.style.cssText = "";
-      lbPh.innerHTML = `<img src="${t.photo}" alt="${t.event}">`;
+      lbPh.innerHTML = `<img src="${t.photo}" alt="${t.event}" style="width:100%;height:auto;max-height:55vh;object-fit:contain;display:block;">`;
     } else {
       lbPh.innerHTML = "";
-      lbPh.style.cssText = `background:${t.photoBg};display:flex;align-items:center;justify-content:center;font-size:clamp(5rem,15vw,8rem);`;
+      lbPh.style.cssText = `background:${t.photoBg};display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;font-size:clamp(4rem,12vw,7rem);`;
       lbPh.textContent = t.emoji;
     }
 
-    // Replace caption with rich timeline meta
     lbCap.innerHTML = `
-      <div class="timeline-lb-meta">
-        <span class="timeline-lb-year">${t.year}</span>
-        <span class="timeline-lb-event">${t.event}</span>
-        <p class="lightbox-caption">${t.text}</p>
-      </div>`;
+      <span style="display:block;font-size:0.65rem;letter-spacing:0.2em;color:var(--purple-light);text-transform:uppercase;margin-bottom:0.3rem">${t.year}</span>
+      <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,3vw,1.6rem);font-weight:600;color:var(--cream);margin-bottom:0.5rem">${t.event}</span>
+      <span style="display:block;font-size:0.875rem;color:var(--cream-dim);line-height:1.7">${t.text}</span>`;
 
     lb.classList.remove("hidden");
     document.body.style.overflow = "hidden";
@@ -301,18 +253,15 @@ function initTimelineLightbox() {
     lbCap.innerHTML = "";
   }
 
-  // Click on any timeline card
-  el("timelineWrap")?.addEventListener("click", (e) => {
+  el("timelineWrap")?.addEventListener("click", e => {
     const card = (e.target as HTMLElement).closest<HTMLElement>(".timeline-card");
     if (card?.dataset.timelineIdx !== undefined) {
       openTimeline(Number(card.dataset.timelineIdx));
     }
   });
 
-  // Close handlers — reuse existing lightbox close buttons
   el("lightboxClose")?.addEventListener("click", closeTimeline);
   el("lightboxBackdrop")?.addEventListener("click", closeTimeline);
-  // Note: Escape key is already handled by initPolaroids — it closes any open lightbox
 }
 
 /* ══════════════════════════════════════════════════
@@ -552,8 +501,6 @@ function initPolaroids() {
   function open(idx: number) {
     const p = POLAROIDS[idx];
     if (!p || !lb || !lbPh || !lbCap) return;
-    // Remove timeline modifier if previously used
-    lb.querySelector(".lightbox-content")?.classList.remove("lightbox-content--timeline");
     if (p.photo) {
       lbPh.innerHTML = `<img src="${p.photo}" alt="${p.caption}" style="width:100%;height:100%;object-fit:contain;">`;
     } else {
@@ -561,6 +508,7 @@ function initPolaroids() {
       lbPh.style.cssText    = `background:${p.bg};display:flex;align-items:center;justify-content:center;font-size:clamp(5rem,15vw,8rem);`;
       lbPh.textContent      = p.emoji;
     }
+    lb.querySelector(".lightbox-content")?.classList.remove("lightbox-content--timeline");
     lbCap.textContent = p.caption;
     lb.classList.remove("hidden");
     document.body.style.overflow = "hidden";
@@ -912,7 +860,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLanguageCards();
   renderPolaroids();
   renderTimeline();
-  initTimelineCarousel();
+  initTimelineMobile();
   initTimelineLightbox();
   renderAccordion();
   renderAudioCards();
