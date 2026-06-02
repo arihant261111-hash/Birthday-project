@@ -1050,7 +1050,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   gap: 1.5rem;
   max-width: 900px;
   margin: 2.5rem auto 0;
-  justify-items: center;
+  justify-content: center;
 }
 .audio-card {
   background: var(--navy-card);
@@ -1058,6 +1058,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   border-radius: 4px;
   padding: 1.5rem 1.8rem 1.8rem;
   transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  width: 100%;
 }
 .audio-card:hover {
   border-color: rgba(123,94,167,0.5);
