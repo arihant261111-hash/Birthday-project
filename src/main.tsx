@@ -895,17 +895,19 @@ function initHiddenLetter() {
   const lo = (id: string) => document.getElementById(id) as HTMLElement | null;
 
   // ── Observe the final section ─────────────────────────────
-  const obs = new IntersectionObserver(
-    entries => {
-      if (entries[0].isIntersecting && !triggered) {
-        triggered = true;
-        obs.disconnect();
-        runLetterSequence();
-      }
-    },
-    { threshold: 0.6 }
-  );
-  obs.observe(finalSection);
+  // Trigger when user scrolls to the very bottom of the page.
+  // This works regardless of viewport size or zoom level.
+  function onScroll() {
+    const scrolledToBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 80;
+    if (scrolledToBottom && !triggered) {
+      triggered = true;
+      window.removeEventListener("scroll", onScroll);
+      runLetterSequence();
+    }
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  // Also check immediately in case already at bottom
+  onScroll();
 
   function runLetterSequence() {
     // ── Build the letter lines from config ──────────────────
@@ -1074,11 +1076,26 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLittleThings();
   renderFourWords();
 
-  // 2. Countdown
-  spawnParticles();
-  setDailyMessage();
-  updateCountdown();
-  countdownInterval = setInterval(() => { updateCountdown(); tickGlow(); }, 1000);
+  // 2. Countdown — check for preview mode first
+  const previewMode = new URLSearchParams(window.location.search).get("preview");
+  if (previewMode === "main") {
+    // Skip straight to main experience
+    showUnlockScreenDirect();
+    setTimeout(() => transitionToMain(), 10);
+  } else if (previewMode === "unlock") {
+    showUnlockScreenDirect();
+  } else {
+    spawnParticles();
+    setDailyMessage();
+    const diffAtBoot = getBirthdayMs() - Date.now();
+    if (diffAtBoot <= 0) {
+      countdownDone = true;
+      showUnlockScreenDirect();
+    } else {
+      updateCountdown();
+      countdownInterval = setInterval(() => { updateCountdown(); tickGlow(); }, 1000);
+    }
+  }
 
   // 3. Interactions
   initParallax();
