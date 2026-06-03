@@ -456,6 +456,8 @@ function transitionToMain() {
     setFinalDate();
     initScrollReveal();
     initFourWords();
+    // Start listening for scroll-to-bottom AFTER main is revealed
+    initHiddenLetter();
   }, 950);
 }
 
@@ -1106,6 +1108,5 @@ document.addEventListener("DOMContentLoaded", () => {
   el("unlockBtn")?.addEventListener("click", transitionToMain);
   // BUG 4 FIX: boot achievement system
   initAchievements();
-  // Hidden letter — final cinematic sequence
-  initHiddenLetter();
+  // Hidden letter is initialized inside transitionToMain()
 });
