@@ -1697,3 +1697,363 @@ button, [role="button"], .polaroid, .accordion-btn,
   transform: scale(1.04);
   pointer-events: none;
 }
+
+/* ════════════════════════════════════════════════════════════
+   HIDDEN LETTER SEQUENCE
+   Full-screen overlay. Sits above the entire website.
+   Triggered by IntersectionObserver on #final-letter.
+   All animations GPU-composited (opacity + transform only).
+════════════════════════════════════════════════════════════ */
+
+/* ── Timing constants (mirrors JS LETTER_T) ── */
+/* Edit the JS constants, not these — these are just visual reference */
+
+.letter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  overflow: hidden;
+
+  /* starts as the site's ending — same navy bg */
+  background: radial-gradient(ellipse at 50% 38%, #1e1246 0%, #0d0c1d 62%);
+
+  /* NOT display:none — it lives in the layer stack always,
+     but is invisible and non-interactive until triggered */
+  opacity: 0;
+  /* no transition here — JS controls phase-by-phase */
+}
+
+.letter-overlay.lo-active {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* ── Act 2: whisper ── */
+.lo-whisper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.lo-whisper-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 4vw, 24px);
+  font-style: italic;
+  color: #9b8fc8;
+  letter-spacing: 0.02em;
+  line-height: 1.65;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+.lo-whisper-text.lo-show { opacity: 1; }
+
+/* ── Drifting petal ── */
+.lo-petal {
+  position: absolute;
+  top: -60px;
+  left: calc(50% - 17px);
+  width: 34px;
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.lo-petal.lo-drift {
+  transition: top 3.2s linear, opacity 0.8s ease, transform 3.2s ease;
+  opacity: 1;
+  top: 105vh;
+  transform: rotate(220deg);
+}
+
+/* ── Warm dark backdrop ── */
+.lo-warm {
+  transition: opacity 2.6s ease;
+}
+
+/* ── Ambient petals (Act 4) ── */
+.lo-amb {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  will-change: opacity, transform;
+}
+.lo-amb--1 { width: 28px; left: 16%; top: 20%; }
+.lo-amb--2 { width: 44px; right: 14%; top: 28%; }
+
+.lo-amb.lo-show {
+  opacity: 0.45;
+  transition: opacity 1.8s ease, transform 6s linear;
+  transform: translateY(24px);
+}
+
+/* ── Envelope ── */
+.lo-envelope {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 200px;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 1.2s ease, transform 1.4s cubic-bezier(0.4,0,0.2,1);
+  will-change: opacity, transform;
+}
+.lo-envelope.lo-show { opacity: 1; }
+.lo-envelope.lo-sink {
+  transform: translate(-50%, calc(-50% + 72px)) scale(0.78);
+  opacity: 0;
+}
+
+.lo-env-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: linear-gradient(155deg, #2c2016 0%, #251b12 50%, #1f1610 100%);
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.65),
+    inset 0 1px 0 rgba(190,150,100,0.12),
+    inset 0 -2px 6px rgba(0,0,0,0.4);
+}
+
+.lo-env-bottom {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 0;
+  border-left: 150px solid transparent;
+  border-right: 150px solid transparent;
+  border-bottom: 100px solid #1c140d;
+  z-index: 1;
+}
+
+.lo-env-seam {
+  position: absolute;
+  bottom: 0;
+  height: 104px;
+  width: 158px;
+  z-index: 1;
+}
+.lo-env-seam--left {
+  left: 0;
+  border-right: 1px solid rgba(60,44,26,0.7);
+  transform: skewX(-56deg);
+  transform-origin: bottom left;
+}
+.lo-env-seam--right {
+  right: 0;
+  border-left: 1px solid rgba(60,44,26,0.7);
+  transform: skewX(56deg);
+  transform-origin: bottom right;
+}
+
+.lo-flap-shadow {
+  position: absolute;
+  top: 0; left: 8px; right: 8px;
+  height: 96px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 1.1s ease;
+  transform-origin: top;
+  z-index: 6;
+  border-radius: 4px;
+  pointer-events: none;
+}
+.lo-flap-shadow.lo-show { opacity: 1; }
+.lo-flap-shadow.lo-sweep {
+  transform: translateY(40px) scaleY(0.4);
+  opacity: 0;
+}
+
+.lo-flap {
+  position: absolute;
+  top: 0; left: 0;
+  width: 0; height: 0;
+  border-left: 150px solid transparent;
+  border-right: 150px solid transparent;
+  border-top: 100px solid #2e2116;
+  transform-origin: top center;
+  transition: transform 1.1s cubic-bezier(0.5,0,0.3,1);
+  z-index: 7;
+  backface-visibility: hidden;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+}
+.lo-flap.lo-open { transform: rotateX(178deg); }
+
+.lo-wax {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  z-index: 8;
+  transition: transform 0.7s ease, opacity 0.4s ease;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.55));
+}
+.lo-wax.lo-swell { transform: translateX(-50%) scale(1.16); }
+.lo-wax.lo-break { opacity: 0; }
+
+/* ── Letter paper ── */
+.lo-paper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 90px)) scale(0.82);
+  width: min(88%, 360px);
+  max-height: min(82vh, 540px);
+  overflow-y: auto;
+  padding: 42px 34px 38px;
+  border-radius: 3px;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 1.4s ease, transform 1.4s cubic-bezier(0.34,1.15,0.5,1);
+  will-change: opacity, transform;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  /* paper material */
+  background: #f3e8d2;
+  box-shadow:
+    0 50px 120px rgba(0,0,0,0.85),
+    0 8px 24px rgba(0,0,0,0.5),
+    inset 0 0 70px rgba(165,125,75,0.13);
+}
+
+.lo-paper.lo-rise {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* paper texture layers */
+.lo-paper-fibre,
+.lo-paper-light,
+.lo-paper-lines,
+.lo-paper-fold {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.lo-paper-fibre {
+  opacity: 0.45;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.055 0'/></filter><rect width='120' height='120' filter='url(%23f)'/></svg>");
+}
+
+.lo-paper-light {
+  background: radial-gradient(ellipse at 32% 0%, rgba(170,130,75,0.12), transparent 55%);
+}
+
+.lo-paper-lines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 33px,
+    rgba(120,90,50,0.055) 34px
+  );
+}
+
+.lo-paper-fold {
+  top: 6%; bottom: 6%;
+  left: 50%; right: auto;
+  width: 1.5px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(120,90,50,0.10) 20%,
+    rgba(120,90,50,0.10) 80%,
+    transparent
+  );
+}
+
+/* pressed gerbera */
+.lo-gerbera {
+  position: absolute;
+  top: -18px;
+  right: 14px;
+  width: 54px;
+  transform: rotate(18deg);
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.25));
+  pointer-events: none;
+}
+
+/* byhand eyebrow */
+.lo-byhand {
+  position: relative;
+  color: #8a7048;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* line container */
+.lo-lines {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* each revealed line */
+.lo-line {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(19px, 4.5vw, 23px);
+  line-height: 1.7;
+  color: #473a22;
+  opacity: 0;
+  transition: opacity 1.1s ease;
+  margin-bottom: 14px;
+}
+.lo-line.lo-show { opacity: 1; }
+
+.lo-line--greeting {
+  font-size: clamp(22px, 5vw, 27px);
+  color: #3a2e1a;
+  margin-bottom: 16px;
+}
+.lo-line--personal { color: #473a22; }
+.lo-line--italic {
+  font-style: italic;
+  color: #6a5836;
+}
+.lo-line--signature {
+  font-family: 'Dancing Script', cursive;
+  font-weight: 600;
+  font-size: clamp(26px, 6vw, 34px);
+  color: #3a2e1a;
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.lo-line--petal {
+  text-align: right;
+  margin-bottom: 0;
+  line-height: 1;
+}
+.lo-line--petal svg {
+  display: inline-block;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .lo-envelope { width: 260px; height: 174px; }
+  .lo-env-bottom { border-left-width: 130px; border-right-width: 130px; border-bottom-width: 87px; }
+  .lo-env-seam { width: 137px; height: 90px; }
+  .lo-env-seam--left { transform: skewX(-56.3deg); }
+  .lo-env-seam--right { transform: skewX(56.3deg); }
+  .lo-flap { border-left-width: 130px; border-right-width: 130px; border-top-width: 87px; }
+  .lo-flap-shadow { height: 83px; }
+  .lo-wax { top: 62px; }
+  .lo-paper { padding: 32px 22px 30px; }
+}

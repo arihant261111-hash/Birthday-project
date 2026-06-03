@@ -30,8 +30,8 @@ export const BIRTHDAY_AGE  = 18;
  */
 export const BIRTHDAY_DATE = {
   year:  2026,
-  month: 6,    // July
-  day:   3,   // July 30
+  month: 7,    // July
+  day:   30,  // July 30
   hour:  1,
   min:   0,
   sec:   0,
@@ -383,4 +383,32 @@ Happy birthday, ${BIRTHDAY_NAME}. Thank you for existing.`,
 
   signatureLine1: "With all my love,",
   signatureLine2: "— Ari ✦",  // ← change to your name
+};
+/* ══════════════════════════════════════════════════
+   HIDDEN LETTER — the final experience
+   Write your real letter here, Ari.
+   Each string in LETTER_LINES is one line that
+   appears on screen, ~1.15s apart.
+══════════════════════════════════════════════════ */
+export const HIDDEN_LETTER = {
+  // The whisper line shown before the dissolve
+  whisperLine: "some things were never meant for a screen.",
+
+  // Fixed opening lines (do not change these)
+  openingLines: [
+    "My dearest Avline,",
+    "You told me once that you wished someone would write you a real letter.",
+    "I couldn't press paper into your hands through a screen — so I made the screen become paper instead.",
+    "Everything before this was the gift. This is the part that's only yours.",
+  ],
+
+  // ── YOUR REAL WORDS GO HERE ──────────────────────
+  // Add as many lines as you want. Each string = one line reveal.
+  personalLines: [
+    "[ your real words, in your real voice ]",
+    "[ add more lines as needed ]",
+  ],
+
+  // Signature
+  signature: "— Ari",
 };

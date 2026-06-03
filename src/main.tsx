@@ -7,6 +7,7 @@
  */
 import "./index.css";
 import {
+  HIDDEN_LETTER,
   BIRTHDAY_NAME,
   BIRTHDAY_AGE,
   BIRTHDAY_DATE,
@@ -854,6 +855,212 @@ function tickGlow() {
 /* ══════════════════════════════════════════════════
    BOOT
 ══════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════════
+   HIDDEN LETTER SEQUENCE
+   All timings in milliseconds. Edit here to adjust pacing.
+════════════════════════════════════════════════════════════ */
+const LETTER_T = {
+  stillness:       4000,   // how long the final message sits still
+  dateFade:        4000,   // when date starts fading
+  dateDuration:    1000,
+  sigFade:         5000,   // when "Always, Ari" fades
+  sigDuration:     1300,
+  petalStart:      6300,   // petal begins drifting
+  whisperStart:    8000,   // whisper line fades in
+  dissolveStart:   9500,   // website begins dissolving
+  dissolveDur:     2600,
+  envelopeShow:   12500,   // envelope rests in warm dark
+  sealSwell:      14500,   // wax seal swells
+  sealBreak:      15300,   // seal disappears
+  flapOpen:       15600,   // flap rotates open
+  letterRise:     16000,   // letter rises, envelope sinks
+  textStart:      21000,   // first line of text (after 3s paper rest)
+  lineInterval:    1150,   // ms between each line appearing
+};
+
+/* ════════════════════════════════════
+   LETTER SEQUENCE CONTROLLER
+════════════════════════════════════ */
+function initHiddenLetter() {
+  const finalSection = document.getElementById("final-letter");
+  const overlay = document.getElementById("letterOverlay");
+  if (!finalSection || !overlay) return;
+
+  let triggered = false;
+  const timers: ReturnType<typeof setTimeout>[] = [];
+  const T = (fn: () => void, ms: number) => timers.push(setTimeout(fn, ms));
+
+  // Helper: get overlay child elements
+  const lo = (id: string) => document.getElementById(id) as HTMLElement | null;
+
+  // ── Observe the final section ─────────────────────────────
+  const obs = new IntersectionObserver(
+    entries => {
+      if (entries[0].isIntersecting && !triggered) {
+        triggered = true;
+        obs.disconnect();
+        runLetterSequence();
+      }
+    },
+    { threshold: 0.6 }
+  );
+  obs.observe(finalSection);
+
+  function runLetterSequence() {
+    // ── Build the letter lines from config ──────────────────
+    const linesContainer = document.getElementById("lo-lines");
+    if (!linesContainer) return;
+
+    const allLines: { text: string; cls: string }[] = [];
+
+    // fixed opening
+    HIDDEN_LETTER.openingLines.forEach((line, i) => {
+      allLines.push({ text: line, cls: i === 0 ? "lo-line lo-line--greeting" : "lo-line lo-line--personal" });
+    });
+
+    // personal lines
+    HIDDEN_LETTER.personalLines.forEach(line => {
+      allLines.push({ text: line, cls: "lo-line lo-line--italic" });
+    });
+
+    // signature
+    allLines.push({ text: HIDDEN_LETTER.signature, cls: "lo-line lo-line--signature" });
+
+    // closing petal SVG
+    allLines.push({
+      text: `<svg width="24" height="36" viewBox="0 0 40 60"><ellipse cx="20" cy="30" rx="10" ry="24" fill="#c87a96" opacity="0.8"/><ellipse cx="20" cy="30" rx="5" ry="20" fill="#d894ac" opacity="0.6"/></svg>`,
+      cls: "lo-line lo-line--petal"
+    });
+
+    // Inject lines into DOM
+    allLines.forEach(({ text, cls }) => {
+      const p = document.createElement("p");
+      p.className = cls;
+      p.innerHTML = text;
+      linesContainer.appendChild(p);
+    });
+
+    // ── ACT 1: activate overlay invisibly, no animation ────
+    // The overlay starts transparent (opacity:0) in CSS.
+    // We make it active so it's "there" but invisible —
+    // we'll use it as the fading final-message layer.
+    overlay.style.transition = "none";
+    overlay.style.opacity = "1";
+    overlay.classList.add("lo-active");
+    // Prevent page scroll during the sequence
+    document.body.style.overflow = "hidden";
+
+    // ── ACT 2: date fades ──────────────────────────────────
+    T(() => {
+      const eDate = document.getElementById("eDate") as HTMLElement | null;
+      if (eDate) { eDate.style.transition = "opacity 1s ease"; eDate.style.opacity = "0"; }
+    }, LETTER_T.dateFade);
+
+    // signature and eyebrow fade
+    T(() => {
+      ["eAlways","eAri","eEyebrow"].forEach(id => {
+        const el = document.getElementById(id) as HTMLElement | null;
+        if (el) { el.style.transition = "opacity 1.3s ease"; el.style.opacity = "0"; }
+      });
+    }, LETTER_T.sigFade);
+
+    // petal drifts
+    T(() => {
+      const petal = document.getElementById("lo-petal");
+      if (petal) petal.classList.add("lo-drift");
+    }, LETTER_T.petalStart);
+
+    // whisper line
+    T(() => {
+      const wt = document.getElementById("lo-whisperText");
+      if (wt) {
+        wt.textContent = HIDDEN_LETTER.whisperLine;
+        wt.classList.add("lo-show");
+      }
+    }, LETTER_T.whisperStart);
+
+    // ── ACT 3: dissolve ────────────────────────────────────
+    T(() => {
+      // overlay background transitions from navy to warm dark
+      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms ease`;
+      overlay.style.background = "radial-gradient(ellipse at 50% 44%, #1f120a 0%, #120a05 55%, #080402 100%)";
+
+      // whisper fades as the world changes
+      const wt = document.getElementById("lo-whisperText");
+      if (wt) { wt.style.transition = "opacity 1.2s ease"; wt.style.opacity = "0"; }
+
+      // The site layer blurs and scales away beneath the overlay
+      // (overlay is already opaque so the site is hidden — but we still
+      // animate the site elements for if the overlay ever has opacity < 1)
+      const siteLayer = document.getElementById("siteLayer") as HTMLElement | null;
+      if (siteLayer) {
+        siteLayer.style.transition = `opacity ${LETTER_T.dissolveDur}ms ease, filter ${LETTER_T.dissolveDur}ms ease, transform ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1)`;
+        siteLayer.style.opacity = "0";
+        siteLayer.style.filter = "blur(8px)";
+        siteLayer.style.transform = "scale(1.12)";
+      }
+    }, LETTER_T.dissolveStart);
+
+    // ── ACT 4: envelope rests ──────────────────────────────
+    T(() => {
+      const env = document.getElementById("lo-envelope");
+      if (env) env.classList.add("lo-show");
+      // ambient petals drift in
+      document.querySelectorAll<HTMLElement>(".lo-amb").forEach((a, i) => {
+        setTimeout(() => a.classList.add("lo-show"), i * 400);
+      });
+    }, LETTER_T.envelopeShow);
+
+    // seal swells
+    T(() => {
+      const wax = document.getElementById("lo-wax");
+      if (wax) wax.classList.add("lo-swell");
+    }, LETTER_T.sealSwell);
+
+    // seal breaks
+    T(() => {
+      const wax = document.getElementById("lo-wax");
+      if (wax) { wax.classList.remove("lo-swell"); wax.classList.add("lo-break"); }
+    }, LETTER_T.sealBreak);
+
+    // flap opens + shadow appears
+    T(() => {
+      const flap = document.getElementById("lo-flap");
+      const shadow = document.getElementById("lo-flapShadow");
+      if (flap) flap.classList.add("lo-open");
+      if (shadow) shadow.classList.add("lo-show");
+    }, LETTER_T.flapOpen);
+
+    // letter rises, envelope sinks, shadow sweeps away
+    T(() => {
+      const paper = document.getElementById("lo-paper");
+      const env   = document.getElementById("lo-envelope");
+      const shadow = document.getElementById("lo-flapShadow");
+      if (paper) paper.classList.add("lo-rise");
+      if (env)   env.classList.add("lo-sink");
+      if (shadow) { shadow.classList.remove("lo-show"); shadow.classList.add("lo-sweep"); }
+    }, LETTER_T.letterRise);
+
+    // ── TEXT REVEAL ────────────────────────────────────────
+    // Starts at textStart (21s) — paper has settled for 3s
+    T(() => {
+      const lines = linesContainer.querySelectorAll<HTMLElement>(".lo-line");
+      lines.forEach((line, i) => {
+        timers.push(setTimeout(() => {
+          line.classList.add("lo-show");
+          // auto-scroll paper gently as new lines appear
+          const paper = document.getElementById("lo-paper");
+          if (paper) paper.scrollTop = paper.scrollHeight;
+        }, i * LETTER_T.lineInterval));
+      });
+    }, LETTER_T.textStart);
+
+    // ── DONE — no further events, sequence is over ─────────
+    // The letter remains. The user remains. Silence is the ending.
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Render all config-driven sections into the DOM
   applyStaticText();
@@ -882,4 +1089,6 @@ document.addEventListener("DOMContentLoaded", () => {
   el("unlockBtn")?.addEventListener("click", transitionToMain);
   // BUG 4 FIX: boot achievement system
   initAchievements();
+  // Hidden letter — final cinematic sequence
+  initHiddenLetter();
 });
