@@ -945,23 +945,20 @@ function initHiddenLetter() {
       linesContainer.appendChild(p);
     });
 
-    // ── ACT 1: activate overlay invisibly, no animation ────
-    // The overlay starts transparent (opacity:0) in CSS.
-    // We make it active so it's "there" but invisible —
-    // we'll use it as the fading final-message layer.
-    overlay.style.transition = "none";
-    overlay.style.opacity = "1";
-    overlay.classList.add("lo-active");
-    // Prevent page scroll during the sequence
+    // ── ACT 1: lock scroll. Overlay stays INVISIBLE for now.
+    // The final section is still fully visible beneath it.
+    // We only activate the overlay when Act 3 dissolve begins.
+    overlay.classList.add("lo-active"); // pointer-events, but opacity stays 0
     document.body.style.overflow = "hidden";
 
-    // ── ACT 2: date fades ──────────────────────────────────
+    // ── ACT 2: final message elements fade out one by one ──
+    // Date fades first
     T(() => {
       const eDate = document.getElementById("eDate") as HTMLElement | null;
       if (eDate) { eDate.style.transition = "opacity 1s ease"; eDate.style.opacity = "0"; }
     }, LETTER_T.dateFade);
 
-    // signature and eyebrow fade
+    // Signature and eyebrow fade
     T(() => {
       ["eAlways","eAri","eEyebrow"].forEach(id => {
         const el = document.getElementById(id) as HTMLElement | null;
@@ -969,34 +966,36 @@ function initHiddenLetter() {
       });
     }, LETTER_T.sigFade);
 
-    // petal drifts
+    // Petal drifts (overlay still transparent — petal floats over the real page)
     T(() => {
+      overlay.style.transition = "opacity 0.01s";
+      overlay.style.opacity = "1"; // now visible just enough for the petal layer
       const petal = document.getElementById("lo-petal");
       if (petal) petal.classList.add("lo-drift");
     }, LETTER_T.petalStart);
 
-    // whisper line
+    // Whisper line — fades in slowly over 2s (was 1.5s, now more patient)
     T(() => {
       const wt = document.getElementById("lo-whisperText");
       if (wt) {
         wt.textContent = HIDDEN_LETTER.whisperLine;
+        wt.style.transition = "opacity 2.2s ease";
         wt.classList.add("lo-show");
       }
     }, LETTER_T.whisperStart);
 
     // ── ACT 3: dissolve ────────────────────────────────────
     T(() => {
-      // overlay background transitions from navy to warm dark
-      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms ease`;
+      // Now the overlay background transitions from transparent navy → warm dark
+      // This is the moment the "website disappears"
+      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms ease, opacity 0.5s ease`;
       overlay.style.background = "radial-gradient(ellipse at 50% 44%, #1f120a 0%, #120a05 55%, #080402 100%)";
 
-      // whisper fades as the world changes
+      // Whisper fades as the world changes
       const wt = document.getElementById("lo-whisperText");
-      if (wt) { wt.style.transition = "opacity 1.2s ease"; wt.style.opacity = "0"; }
+      if (wt) { wt.style.transition = "opacity 1.5s ease"; wt.style.opacity = "0"; }
 
-      // The site layer blurs and scales away beneath the overlay
-      // (overlay is already opaque so the site is hidden — but we still
-      // animate the site elements for if the overlay ever has opacity < 1)
+      // Site layer blurs and recedes beneath
       const siteLayer = document.getElementById("siteLayer") as HTMLElement | null;
       if (siteLayer) {
         siteLayer.style.transition = `opacity ${LETTER_T.dissolveDur}ms ease, filter ${LETTER_T.dissolveDur}ms ease, transform ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1)`;
