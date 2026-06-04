@@ -871,7 +871,7 @@ const LETTER_T = {
   petalStart:      6300,   // petal begins drifting
   whisperStart:    8000,   // whisper line fades in
   dissolveStart:   9500,   // website begins dissolving
-  dissolveDur:     2600,
+  dissolveDur:     5000,   // slow, cinematic dissolve
   envelopeShow:   12500,   // envelope rests in warm dark
   sealSwell:      14500,   // wax seal swells
   sealBreak:      15300,   // seal disappears
@@ -988,21 +988,28 @@ function initHiddenLetter() {
     T(() => {
       // Now the overlay background transitions from transparent navy → warm dark
       // This is the moment the "website disappears"
-      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms ease, opacity 0.5s ease`;
+      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1)`;
       overlay.style.background = "radial-gradient(ellipse at 50% 44%, #1f120a 0%, #120a05 55%, #080402 100%)";
 
       // Whisper fades as the world changes
       const wt = document.getElementById("lo-whisperText");
       if (wt) { wt.style.transition = "opacity 1.5s ease"; wt.style.opacity = "0"; }
 
-      // Site layer blurs and recedes beneath
+      // Site layer very gradually blurs, dims and recedes
+      // We split it into two stages so it feels like slow recession
       const siteLayer = document.getElementById("siteLayer") as HTMLElement | null;
       if (siteLayer) {
-        siteLayer.style.transition = `opacity ${LETTER_T.dissolveDur}ms ease, filter ${LETTER_T.dissolveDur}ms ease, transform ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1)`;
+        // Stage 1: start the blur and slight scale (first half)
+        siteLayer.style.transition = `opacity ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1), filter ${LETTER_T.dissolveDur}ms ease, transform ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1)`;
         siteLayer.style.opacity = "0";
-        siteLayer.style.filter = "blur(8px)";
-        siteLayer.style.transform = "scale(1.12)";
+        siteLayer.style.filter = "blur(10px)";
+        siteLayer.style.transform = "scale(1.08)";
       }
+      // Gradually fade the overlay IN over the dissolve duration
+      // so the warm background reveals itself slowly
+      overlay.style.opacity = "0";
+      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1), opacity ${LETTER_T.dissolveDur}ms ease`;
+      requestAnimationFrame(() => { overlay.style.opacity = "1"; });
     }, LETTER_T.dissolveStart);
 
     // ── ACT 4: envelope rests ──────────────────────────────
