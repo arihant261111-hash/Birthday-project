@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>letter — emotional prototype</title>
+
+<!--
+  EMOTIONAL PROTOTYPE — not production code.
+  Testing: feeling, pacing, atmosphere of "the screen gets out of the way of the letter."
+  All timings live in the TIMINGS object near the bottom — tweak freely.
+  Click the small ↻ (bottom-right) to replay.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Caveat:wght@400;500;600&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    /* paper */
+    --ivory:    #f6efe1;
+    --ivory-hi: #fbf6ec;
+    --ivory-lo: #efe4cf;
+    /* ink */
+    --ink:      #22315b;
+    --ink-soft: #2c3a63;
+    /* accent */
+    --plum:     #6f4d84;
+    /* the dark "glass" */
+    --dark-1:   #241b3b;
+    --dark-2:   #150f29;
+    --dark-3:   #0c0918;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{ height:100%; }
+  body{
+    background:var(--dark-3);
+    overflow:hidden;
+    font-family:'Caveat', cursive;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .scene{ position:fixed; inset:0; }
+
+  /* ════════════════════════════════════════════
+     THE PAPER  (always present, underneath)
+     Starts soft + dim; sharpens into focus as the
+     glass lifts away.
+  ════════════════════════════════════════════ */
+  /* the visible surface — fixed, full-viewport, never scrolls.
+     Blurs + dims first, then sharpens into focus as the glass lifts. */
+  .paper-surface{
+    position:fixed; inset:0; z-index:1;
+    background:
+      radial-gradient(120% 90% at 50% 0%, var(--ivory-hi) 0%, var(--ivory) 42%, var(--ivory-lo) 100%);
+    filter:blur(7px);
+    opacity:.45;
+    transform:scale(1.02);
+    transition:
+      filter    4.4s ease,
+      opacity   4.4s ease,
+      transform 4.4s cubic-bezier(.4,0,.2,1);
+  }
+  .paper-surface.clear{ filter:none; opacity:1; transform:none; }
+
+  /* subtle paper tooth — fine grain, very low opacity, modern (not vintage) */
+  .paper-surface::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:140px 140px;
+    opacity:.045;
+    mix-blend-mode:multiply;
+  }
+  /* the faintest soft light falling across the surface */
+  .paper-surface::after{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(80% 60% at 50% 38%, rgba(255,255,255,.18), transparent 70%);
+  }
+
+  /* the scroll layer — transparent, holds the letter, scrolls over the surface */
+  .paper-scroll{
+    position:fixed; inset:0; z-index:2;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* ════════════════════════════════════════════
+     THE LETTER  (already written, fades in whole)
+  ════════════════════════════════════════════ */
+  .letter{
+    position:relative; z-index:2;
+    min-height:100%;
+    margin:0 auto;              /* center the writing block on the page */
+    max-width:42rem;
+    padding:
+      clamp(3rem, 9vh, 6.5rem)
+      clamp(1.5rem, 7vw, 3.5rem)
+      clamp(3rem, 9vh, 6.5rem);
+  }
+
+  .line{
+    font-size:clamp(1.45rem, 1rem + 1.5vw, 1.95rem);
+    line-height:1.92;
+    color:var(--ink);
+    letter-spacing:.2px;
+    margin-bottom:1.25rem;
+    max-width:34rem;          /* keeps the right edge naturally ragged */
+    text-wrap:pretty;
+    opacity:0;                /* each line fades in softly, in sequence */
+    transition:opacity 2.2s ease;
+  }
+  .line.show{ opacity:1; }
+  .line.greeting{ margin-bottom:1.9rem; }
+
+  /* the single hardest sentence — held a beat longer, fades slower */
+  #hesitation{
+    transition:opacity 2.1s ease;   /* slower than the rest — more tender */
+    color:var(--ink-soft);
+  }
+
+  .signature{
+    font-family:'Dancing Script', cursive;
+    font-size:clamp(2rem, 1.4rem + 2vw, 2.9rem);
+    color:var(--ink);
+    margin-top:2.4rem;
+    opacity:0;
+    transition:opacity 1.5s ease;
+  }
+  .signature.show{ opacity:.96; }
+
+  /* ── hand-inked flower in the empty right margin ── */
+  .flower{
+    position:absolute;
+    top:clamp(1.5rem, 5vh, 3.2rem);
+    right:clamp(1rem, 6vw, 4rem);
+    width:clamp(86px, 12vw, 132px);
+    transform:rotate(-7deg);
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 1.8s ease;
+  }
+  .flower.show{ opacity:1; }
+  .flower::before{   /* soft pressed-warmth behind it */
+    content:""; position:absolute; inset:-18%;
+    background:radial-gradient(circle, rgba(111,77,132,.10), transparent 70%);
+  }
+  .flower svg{ display:block; width:100%; height:auto; overflow:visible; }
+
+  /* tiny matching bud beside the signature */
+  .sig-bud{ display:inline-block; width:34px; vertical-align:-2px; margin-left:.4rem; opacity:.5; }
+  .sig-bud svg{ width:100%; height:auto; }
+
+  /* ════════════════════════════════════════════
+     THE GLASS / VEIL  (dark, on top — lifts away)
+  ════════════════════════════════════════════ */
+  .veil{
+    position:fixed; inset:0; z-index:5;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at 50% 42%, var(--dark-1) 0%, var(--dark-2) 55%, var(--dark-3) 100%);
+    transition:
+      opacity   4.4s cubic-bezier(.4,0,.2,1),
+      filter    4.4s ease,
+      transform 4.4s cubic-bezier(.4,0,.2,1);
+  }
+  .veil.lift{
+    opacity:0;
+    filter:blur(16px);
+    transform:scale(1.06);
+    pointer-events:none;   /* let scroll/touch reach the paper underneath */
+  }
+
+  .whisper{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(1.15rem, .9rem + 1vw, 1.5rem);
+    letter-spacing:.06em;
+    color:#d8cfe9;
+    text-align:center;
+    padding:0 2rem;
+    max-width:32rem;
+    opacity:0;
+    transition:opacity 2.1s ease;
+  }
+  .whisper.show{ opacity:.88; }
+
+  /* ── unobtrusive replay (prototype only) ── */
+  .replay{
+    position:fixed; right:18px; bottom:16px; z-index:10;
+    width:34px; height:34px; border-radius:50%;
+    border:1px solid rgba(120,110,150,.35);
+    background:rgba(20,15,35,.35);
+    color:#b9aecf; font-size:16px; line-height:1;
+    cursor:pointer; opacity:0; pointer-events:none;
+    transition:opacity 1.2s ease, transform .4s ease;
+    backdrop-filter:blur(4px);
+  }
+  .replay.ready{ opacity:.28; pointer-events:auto; }
+  .replay.ready:hover{ opacity:.85; transform:rotate(-40deg); }
+
+  @media (max-width:560px){
+    .flower{ opacity:.85; }
+    .line{ max-width:100%; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="scene">
+
+    <!-- PAPER SURFACE (always underneath, fixed) -->
+    <div class="paper-surface" id="surface"></div>
+
+    <!-- SCROLL LAYER (transparent, holds the letter) -->
+    <div class="paper-scroll" id="paper">
+      <article class="letter" id="letter">
+
+        <!-- hand-inked peony in the right margin -->
+        <div class="flower" aria-hidden="true">
+          <svg viewBox="0 0 200 230">
+            <g fill="none" stroke="#22315b" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" opacity="0.5">
+              <!-- outer bloom -->
+              <path d="M100 52
+                       C116 43 134 50 133 69
+                       C152 64 163 83 151 98
+                       C168 105 165 128 146 131
+                       C153 150 134 162 119 151
+                       C115 170 90 170 84 151
+                       C68 161 50 147 58 129
+                       C39 125 39 102 56 96
+                       C45 80 58 61 77 67
+                       C82 49 100 49 100 52 Z"/>
+              <!-- inner petals -->
+              <path d="M100 78
+                       C111 73 122 80 119 93
+                       C132 92 136 105 125 113
+                       C132 124 120 134 110 129
+                       C108 142 91 142 89 129
+                       C77 133 68 121 76 113
+                       C66 104 70 91 83 92
+                       C83 79 94 77 100 78 Z"/>
+              <!-- center strokes -->
+              <path d="M93 105 C97 101 104 101 108 105"/>
+              <path d="M91 113 C98 118 106 118 113 113"/>
+              <!-- stem + two leaves trailing into the margin -->
+              <path d="M101 153 C103 178 100 202 96 226"/>
+              <path d="M99 180 C83 175 72 184 68 197 C84 197 95 192 99 180 Z"/>
+              <path d="M97 202 C113 196 126 202 130 213 C115 215 103 213 97 202 Z"/>
+            </g>
+            <circle cx="100" cy="109" r="3.4" fill="#6f4d84" opacity="0.55"/>
+          </svg>
+        </div>
+
+        <!-- data-pause = the breath taken BEFORE this line appears (ms).
+             Uneven on purpose: short where a thought flows, long where a hand hesitates. -->
+        <p class="line greeting" data-pause="0">My dearest Avline,</p>
+
+        <p class="line" data-pause="2200">Sometimes it is difficult to find the right words.</p>
+
+        <p class="line" data-pause="1600">Some thoughts feel better on paper than they ever do on a
+          screen — and maybe this was always one of them.</p>
+
+        <p class="line" data-pause="2400">I have spent a long time trying to say this properly.
+          I&rsquo;m still not sure that I can. But I would rather say it
+          imperfectly than not say it at all.</p>
+
+        <!-- THE one hesitation: the longest held breath in the whole letter -->
+        <p class="line" id="hesitation" data-pause="3600">The truth is, I have never been very good
+          at telling you what you actually mean to me.</p>
+
+        <p class="line" data-pause="2000">So let me try, just this once — slowly, and in my own hand.</p>
+
+        <p class="line" data-pause="2300">You have a way of making the ordinary feel like something
+          worth remembering.</p>
+
+        <p class="line" data-pause="2300">And on a day that is entirely yours, I wanted to give you
+          the one thing a screen could never quite hold.</p>
+
+        <p class="line" data-pause="2600">Happy birthday.</p>
+
+        <p class="signature" data-pause="3200">— Ari<span class="sig-bud" aria-hidden="true">
+          <svg viewBox="0 0 60 60">
+            <g fill="none" stroke="#22315b" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+              <path d="M30 20 C38 14 47 19 45 28 C53 31 52 41 43 42
+                       C45 50 35 53 30 46 C25 53 15 50 17 42
+                       C8 41 7 31 15 28 C13 19 22 14 30 20 Z"/>
+              <path d="M30 43 C31 49 30 55 29 60"/>
+            </g>
+            <circle cx="30" cy="31" r="2.4" fill="#6f4d84" opacity="0.6"/>
+          </svg>
+        </span></p>
+
+      </article>
+    </div>
+
+    <!-- THE DARK GLASS (on top, lifts away) -->
+    <div class="veil" id="veil">
+      <p class="whisper" id="whisper">some things were never meant for a screen.</p>
+    </div>
+
+  </div>
+
+  <button class="replay" id="replay" title="replay" aria-label="replay">&#8635;</button>
+
+<script>
+  // ── All pacing lives here. Times are ms from the start of the sequence. ──
+  const TIMINGS = {
+    whisperIn:     500,   // whisper begins to appear
+    whisperOut:    4700,  // whisper begins to fade
+    veilLift:      6000,  // dark glass starts lifting / paper sharpens
+    firstLine:     6900,  // first line of the letter begins to appear
+    lineInterval:  2300,  // fallback gap if a line has no data-pause set
+  };
+
+  const veil       = document.getElementById('veil');
+  const whisper    = document.getElementById('whisper');
+  const surface    = document.getElementById('surface');
+  const paper      = document.getElementById('paper');
+  const letter     = document.getElementById('letter');
+  const flower     = letter.querySelector('.flower');
+  const replayBtn  = document.getElementById('replay');
+
+  let timers = [];
+
+  // Give each line a barely-there hand drift, so the page reads as written
+  // by a person rather than set by a machine. Static — computed once, never animated.
+  function humanizeLines(){
+    document.querySelectorAll('.line').forEach(line => {
+      const rot = (Math.random() * 0.8 - 0.4).toFixed(2);   // ±0.4deg
+      const ty  = (Math.random() * 2  - 1 ).toFixed(2);     // ±1px
+      line.style.transform = `rotate(${rot}deg) translateY(${ty}px)`;
+    });
+  }
+
+  function reset(){
+    timers.forEach(clearTimeout);
+    timers = [];
+    veil.classList.remove('lift');
+    whisper.classList.remove('show');
+    surface.classList.remove('clear');
+    flower.classList.remove('show');
+    replayBtn.classList.remove('ready');
+    letter.querySelectorAll('.line, .signature')
+          .forEach(el => el.classList.remove('show'));
+    paper.scrollTop = 0;
+    void veil.offsetHeight; // force reflow so a replay restarts cleanly
+  }
+
+  function run(){
+    reset();
+    humanizeLines();
+    const at = (fn, t) => timers.push(setTimeout(fn, t));
+
+    at(() => whisper.classList.add('show'),      TIMINGS.whisperIn);
+    at(() => whisper.classList.remove('show'),   TIMINGS.whisperOut);
+    at(() => {                                   // the screen gets out of the way
+      veil.classList.add('lift');
+      surface.classList.add('clear');
+    }, TIMINGS.veilLift);
+    at(() => flower.classList.add('show'),        TIMINGS.firstLine - 200);
+
+    // Reveal each line/signature in sequence — soft fades, in written order,
+    // at an UNEVEN, human cadence. Each line's own data-pause is the breath
+    // taken before it (longer where a real hand would hesitate).
+    const items = [...letter.querySelectorAll('.line, .signature')];
+    let t = TIMINGS.firstLine;
+    items.forEach((el, i) => {
+      const gap = parseInt(el.dataset.pause ?? TIMINGS.lineInterval, 10);
+      t += (i === 0 ? 0 : gap);
+      at(() => {
+        el.classList.add('show');
+        el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      }, t);
+    });
+
+    // The replay control only appears once the letter has fully settled,
+    // so nothing website-like intrudes during the reading.
+    timers.push(setTimeout(() => replayBtn.classList.add('ready'), t + 2600));
+  }
+
+  replayBtn.addEventListener('click', run);
+  run();
+</script>
+</body>
+</html>
