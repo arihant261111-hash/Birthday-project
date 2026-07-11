@@ -8,16 +8,12 @@
 import "./index.css";
 import {
   HIDDEN_LETTER,
-  BIRTHDAY_NAME,
-  BIRTHDAY_AGE,
-  BIRTHDAY_DATE,
-  COUNTDOWN_MESSAGES,
   UNLOCK,
   HERO,
   LANGUAGE_CARDS,
   POLAROIDS,
   TIMELINE,
-  FIFTEEN_THINGS,
+  EIGHTEEN_THINGS,
   AUDIO_TRACKS,
   LITTLE_THINGS,
   FOUR_WORDS,
@@ -41,7 +37,6 @@ function make<K extends keyof HTMLElementTagNameMap>(
   if (inner) e.innerHTML   = inner;
   return e;
 }
-function pad(n: number) { return String(Math.max(0, n)).padStart(2, "0"); }
 function formatTime(s: number) {
   return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 }
@@ -50,11 +45,6 @@ function formatTime(s: number) {
    1. INJECT STATIC TEXT FROM CONFIG
 ══════════════════════════════════════════════════ */
 function applyStaticText() {
-  // Countdown screen
-  setText("cdEyebrow",  `a birthday story for`);
-  setText("cdTitle",    BIRTHDAY_NAME.toUpperCase());
-  setText("cdSubtitle", `turns ${BIRTHDAY_AGE}`);
-
   // Unlock screen
   setText("unlockDate",     UNLOCK.topLine);
   setHTML("unlockHeadline", UNLOCK.headline.replace("\n", "<br>"));
@@ -266,14 +256,14 @@ function initTimelineLightbox() {
 }
 
 /* ══════════════════════════════════════════════════
-   5. RENDER ACCORDION (15 things)
+   5. RENDER ACCORDION (18 things)
 ══════════════════════════════════════════════════ */
 function renderAccordion() {
   const acc = el("accordionList");
   if (!acc) return;
   acc.innerHTML = "";
 
-  FIFTEEN_THINGS.forEach((thing, i) => {
+  EIGHTEEN_THINGS.forEach((thing, i) => {
     const num = String(i + 1).padStart(2, "0");
     const item = make("div", "accordion-item reveal-up");
     item.innerHTML = `
@@ -364,84 +354,14 @@ function renderFourWords() {
 }
 
 /* ══════════════════════════════════════════════════
-   COUNTDOWN — IST
-══════════════════════════════════════════════════ */
-function getBirthdayMs(): number {
-  const { year, month, day, hour, min, sec } = BIRTHDAY_DATE;
-  return Date.UTC(year, month - 1, day, hour, min, sec) - (5 * 60 + 30) * 60000;
-}
-
-let countdownDone = false;
-let countdownInterval: ReturnType<typeof setInterval> | null = null;
-
-function updateCountdown() {
-  const diff = getBirthdayMs() - Date.now();
-  if (diff <= 0) {
-    if (!countdownDone) {
-      countdownDone = true;
-      if (countdownInterval) clearInterval(countdownInterval);
-      transitionToUnlock();
-    }
-    return;
-  }
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  setText("cdDays",    pad(d));
-  setText("cdHours",   pad(h));
-  setText("cdMinutes", pad(m));
-  setText("cdSeconds", pad(s));
-}
-
-function setDailyMessage() {
-  const msg = COUNTDOWN_MESSAGES[new Date().getDay() % COUNTDOWN_MESSAGES.length];
-  setText("cdMessage", msg);
-}
-
-function spawnParticles() {
-  const c = el("particles");
-  if (!c) return;
-  for (let i = 0; i < 30; i++) {
-    const p = make("div", "particle");
-    const size = 2 + Math.random() * 4;
-    Object.assign(p.style, {
-      width:             size + "px",
-      height:            size + "px",
-      left:              (Math.random() * 100) + "%",
-      animationDelay:    (Math.random() * 12) + "s",
-      animationDuration: (8 + Math.random() * 10) + "s",
-    });
-    c.appendChild(p);
-  }
-}
-
-/* ══════════════════════════════════════════════════
    TRANSITIONS
 ══════════════════════════════════════════════════ */
 function showUnlockScreenDirect() {
-  const cs = el("countdown-screen");
   const us = el("unlock-screen");
-  if (cs) cs.classList.add("hidden");
   if (us) {
     us.classList.remove("hidden", "pre-visible");
     us.classList.add("is-visible");
   }
-}
-
-function transitionToUnlock() {
-  const cs = el("countdown-screen");
-  const us = el("unlock-screen");
-  if (!cs || !us) return;
-  us.classList.remove("hidden");
-  us.classList.add("pre-visible");
-  cs.classList.add("fade-out");
-  setTimeout(() => {
-    cs.classList.add("hidden");
-    void us.offsetHeight;
-    us.classList.remove("pre-visible");
-    us.classList.add("is-visible");
-  }, 900);
 }
 
 function transitionToMain() {
@@ -826,35 +746,6 @@ function initAchievements() {
 }
 
 /* ══════════════════════════════════════════════════
-   PARALLAX
-══════════════════════════════════════════════════ */
-function initParallax() {
-  window.addEventListener("mousemove", (e) => {
-    const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-    const dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
-    document.querySelectorAll<HTMLElement>(".float-flower").forEach((f, i) => {
-      const d = 8 + i * 4;
-      f.style.transform = `translate(${dx * d}px,${dy * d}px)`;
-    });
-  }, { passive: true });
-}
-
-/* ══════════════════════════════════════════════════
-   TICK GLOW
-══════════════════════════════════════════════════ */
-let lastSec = -1;
-function tickGlow() {
-  const now = Math.floor(Date.now() / 1000);
-  if (now === lastSec) return;
-  lastSec = now;
-  document.querySelectorAll<HTMLElement>(".countdown-number").forEach(n => {
-    n.style.transition = "text-shadow 0.15s ease";
-    n.style.textShadow = "0 0 40px rgba(212,197,232,0.9)";
-    setTimeout(() => { n.style.textShadow = ""; }, 150);
-  });
-}
-
-/* ══════════════════════════════════════════════════
    BOOT
 ══════════════════════════════════════════════════ */
 
@@ -1084,29 +975,15 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLittleThings();
   renderFourWords();
 
-  // 2. Countdown — check for preview mode first
+  // 2. Show the unlock screen (no countdown — the site opens right away).
+  //    ?preview=main still skips straight to the main experience.
   const previewMode = new URLSearchParams(window.location.search).get("preview");
+  showUnlockScreenDirect();
   if (previewMode === "main") {
-    // Skip straight to main experience
-    showUnlockScreenDirect();
     setTimeout(() => transitionToMain(), 10);
-  } else if (previewMode === "unlock") {
-    showUnlockScreenDirect();
-  } else {
-    spawnParticles();
-    setDailyMessage();
-    const diffAtBoot = getBirthdayMs() - Date.now();
-    if (diffAtBoot <= 0) {
-      countdownDone = true;
-      showUnlockScreenDirect();
-    } else {
-      updateCountdown();
-      countdownInterval = setInterval(() => { updateCountdown(); tickGlow(); }, 1000);
-    }
   }
 
   // 3. Interactions
-  initParallax();
   initLangCarousel();
   initPolaroids();
   initAccordion();

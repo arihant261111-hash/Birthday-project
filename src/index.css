@@ -47,14 +47,14 @@ body {
 .hidden { display: none !important; }
 
 /* ── TYPOGRAPHY SCALE ── */
-h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
+h1, h2, h3, .unlock-headline, .hero-headline,
 .section-title, .big-word, .final-quote-text, .final-letter-body {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
   line-height: 1.15;
 }
 
-.eyebrow, .countdown-eyebrow, .lang-label, .timeline-year {
+.eyebrow, .lang-label, .timeline-year {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
@@ -68,7 +68,7 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SECTION 1 — COUNTDOWN
+   FULLSCREEN OVERLAY BASE
    ═══════════════════════════════════════════════════════════════ */
 .fullscreen {
   position: fixed;
@@ -78,149 +78,6 @@ h1, h2, h3, .countdown-title, .unlock-headline, .hero-headline,
   align-items: center;
   justify-content: center;
   overflow: hidden;
-}
-
-#countdown-screen {
-  background: radial-gradient(ellipse at 30% 30%, #1e1246 0%, #0d0c1d 55%),
-              radial-gradient(ellipse at 70% 80%, #1a1438 0%, transparent 60%);
-}
-
-/* Corner floral decorations */
-.floral-corner {
-  position: absolute;
-  width: 260px;
-  height: 260px;
-  pointer-events: none;
-}
-.floral-corner--tl { top: -40px; left: -40px; }
-.floral-corner--br { bottom: -40px; right: -40px; transform: rotate(180deg); }
-.corner-flower { width: 100%; height: 100%; }
-
-/* Particles */
-.particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  background: var(--purple);
-  animation: float-particle linear infinite;
-  opacity: 0;
-}
-@keyframes float-particle {
-  0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-  10%  { opacity: 0.6; }
-  90%  { opacity: 0.3; }
-  100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
-}
-
-/* Floating flower characters */
-.float-flower {
-  position: absolute;
-  font-size: 1.4rem;
-  color: var(--lavender);
-  opacity: 0;
-  animation: float-char 6s ease-in-out infinite;
-  pointer-events: none;
-}
-.float-flower--1 { top: 15%; left: 18%; animation-delay: 0s;    font-size: 1.8rem; }
-.float-flower--2 { top: 25%; right: 20%; animation-delay: 1.2s; font-size: 1.2rem; color: var(--purple-light); }
-.float-flower--3 { bottom: 30%; left: 22%; animation-delay: 2.4s; font-size: 2rem; color: var(--purple-mid); }
-.float-flower--4 { bottom: 20%; right: 15%; animation-delay: 0.7s; font-size: 1.5rem; }
-.float-flower--5 { top: 60%; left: 10%;  animation-delay: 3.1s;  font-size: 1rem; color: var(--purple); }
-@keyframes float-char {
-  0%, 100% { opacity: 0; transform: translateY(0) scale(0.8); }
-  30%, 70%  { opacity: 0.65; transform: translateY(-14px) scale(1); }
-}
-
-/* Countdown content */
-.countdown-content {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  padding: 0 1.5rem;
-}
-
-.countdown-eyebrow {
-  margin-bottom: 0.6rem;
-}
-
-.countdown-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(4.5rem, 16vw, 11rem);
-  font-weight: 300;
-  letter-spacing: 0.3em;
-  color: var(--cream);
-  text-shadow: 0 0 60px var(--glow-strong), 0 0 120px var(--glow);
-  line-height: 1;
-  margin-bottom: 0.1em;
-}
-
-.countdown-subtitle {
-  font-family: 'Caveat', cursive;
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  color: var(--lavender);
-  margin-bottom: 2.5rem;
-  letter-spacing: 0.05em;
-}
-
-.countdown-timer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 2.2rem;
-  flex-wrap: wrap;
-}
-
-.countdown-unit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 70px;
-}
-
-.countdown-number {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.5rem, 7vw, 5rem);
-  font-weight: 300;
-  line-height: 1;
-  color: var(--cream);
-  text-shadow: 0 0 30px var(--glow-strong);
-  min-width: 2ch;
-  display: block;
-  text-align: center;
-}
-
-.countdown-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--purple-light);
-  margin-top: 0.4rem;
-}
-
-.countdown-separator {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  color: var(--purple);
-  line-height: 1;
-  align-self: flex-start;
-  padding-top: 0.1em;
-  opacity: 0.7;
-}
-
-.countdown-message {
-  font-family: 'Caveat', cursive;
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-  color: var(--lavender);
-  letter-spacing: 0.03em;
-  opacity: 0.85;
-  min-height: 2em;
-  transition: opacity 0.5s ease;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1484,14 +1341,6 @@ button, [role="button"], .polaroid, .accordion-btn,
     padding: clamp(3rem, 8vw, 5rem) clamp(1rem, 5vw, 2rem);
   }
 
-  /* ── Countdown ── */
-  .floral-corner { width: 140px; height: 140px; }
-  .floral-corner--tl { top: -20px; left: -20px; }
-  .floral-corner--br { bottom: -20px; right: -20px; }
-  .countdown-separator { display: none; }
-  .countdown-timer { gap: 1rem; }
-  .countdown-unit { min-width: 56px; }
-
   /* ── Unlock ── */
   .unlock-flower { width: 80px; }
 
@@ -1585,10 +1434,6 @@ button, [role="button"], .polaroid, .accordion-btn,
    SMALL PHONES (≤ 480px)
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
-
-  /* ── Countdown ── */
-  .countdown-unit { min-width: 48px; }
-  .float-flower   { display: none; } /* de-clutter tiny screens */
 
   /* ── Unlock ── */
   .unlock-flower { width: 50px; opacity: 0.55; }
@@ -1687,11 +1532,9 @@ button, [role="button"], .polaroid, .accordion-btn,
 /* ═══════════════════════════════════════════════════════════════
    PAGE TRANSITIONS
    ═══════════════════════════════════════════════════════════════ */
-#countdown-screen,
 #unlock-screen {
   transition: opacity 0.9s ease, transform 0.9s ease;
 }
-#countdown-screen.fade-out,
 #unlock-screen.fade-out {
   opacity: 0;
   transform: scale(1.04);

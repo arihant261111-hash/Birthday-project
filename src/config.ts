@@ -24,34 +24,6 @@
 export const BIRTHDAY_NAME = "Avline";
 export const BIRTHDAY_AGE  = 18;
 
-/**
- * Her birthday in IST (India Standard Time, UTC+5:30).
- * year / month (1–12) / day / hour / minute / second
- */
-export const BIRTHDAY_DATE = {
-  year:  2025,
-  month: 7,    // July
-  day:   30,  // July 30
-  hour:  1,
-  min:   0,
-  sec:   0,
-};
-
-// ─────────────────────────────────────────
-//  COUNTDOWN SCREEN (Section 1)
-// ─────────────────────────────────────────
-
-/** One message per day of the week (Sun → Sat). Can be any length. */
-export const COUNTDOWN_MESSAGES = [
-  '"Something beautiful is waiting."',
-  '"Just a little longer."',
-  '"The stars are counting too."',
-  '"Every second brings you closer."',
-  '"The universe has been preparing."',
-  '"Almost there, love."',
-  '"Some things are worth every wait."',
-];
-
 // ─────────────────────────────────────────
 //  UNLOCK SCREEN (Section 2)
 // ─────────────────────────────────────────
@@ -69,10 +41,10 @@ export const UNLOCK = {
 
 export const HERO = {
   eyebrow:  `For ${BIRTHDAY_NAME}`,
-  headline: "Fifteen years of becoming\nsomeone unforgettable.",
+  headline: "Eighteen years of becoming\nsomeone unforgettable.",
 
   /** The opening letter — shows below the headline. */
-  body: `You came into this world and changed the energy of every room you ever walked into. Fifteen years of laughing too loud, of caring too deeply, of being the kind of person poems are written about. This is not just a birthday — it is the beginning of everything you were always meant to become. And I have had the extraordinary privilege of watching it happen.`,
+  body: `You came into this world and changed the energy of every room you ever walked into. Eighteen years of laughing too loud, of caring too deeply, of being the kind of person poems are written about. This is not just a birthday — it is the beginning of everything you were always meant to become. And I have had the extraordinary privilege of watching it happen.`,
 };
 
 // ─────────────────────────────────────────
@@ -236,10 +208,10 @@ export const TIMELINE = [
 ];
 
 // ─────────────────────────────────────────
-//  15 THINGS (Section 7)
+//  18 THINGS (Section 7)
 // ─────────────────────────────────────────
 
-export const FIFTEEN_THINGS = [
+export const EIGHTEEN_THINGS = [
   {
     title: "The way you love people",
     body:  "You love with your whole chest. No halfway, no conditions. When you care about someone, they feel it in every single interaction. That kind of love is rare, and you give it so freely.",
@@ -295,6 +267,18 @@ export const FIFTEEN_THINGS = [
   {
     title: "Your loyalty",
     body:  "You do not abandon people when things get hard. You stay. You show up. The people lucky enough to be loved by you know what it means to have someone truly in their corner.",
+  },
+  {
+    title: "Your quiet strength",
+    body:  "You do not announce it, but it is always there — the steady way you hold yourself together when things get heavy, and hold other people together too. People lean on you without even realising why.",
+  },
+  {
+    title: "The way you notice things",
+    body:  "The small details no one else catches — a shift in someone's mood, a line in a song, the exact colour of an evening sky. You pay attention to the world like it deserves to be seen. It does, and so do you.",
+  },
+  {
+    title: "That you are entirely yourself",
+    body:  "In a world full of people performing versions of themselves, you have never once pretended to be anyone else. You are unmistakably, unapologetically you — and there is nobody else like you anywhere.",
   },
   {
     title: "Who you are becoming",
