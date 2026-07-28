@@ -144,62 +144,34 @@ export const POLAROIDS = [
 ];
 
 // ─────────────────────────────────────────
-//  TIMELINE (Section 6)
+// ─────────────────────────────────────────
+//  THE MEMORY — 2008 → 2026 (Section 6)
 // ─────────────────────────────────────────
 
 /**
- * Alternates left/right automatically.
- * For a real photo: `photo: "/photos/timeline1.jpg"`.
- * Mark the last (current) entry with `isCurrent: true`.
+ * Two photographs and one line of ink between them. That is the whole
+ * section; there is nothing else in it, on purpose.
+ *
+ * Drop the files into /public/photos/ and reference them as
+ * "/photos/your-file.jpg". Leave `src` empty and a quiet placeholder
+ * card shows instead, so the section still works before the real
+ * pictures arrive.
+ *
+ * Portrait images suit the frames best — they are cropped to 4:5 and
+ * centred. The years appear exactly as written here.
  */
-export const TIMELINE = [
-  {
-    year:      "2006",
-    event:     "The World Changes",
-    text:      "A small but extraordinary person arrives, bringing with her the kind of light that doesn't dim. The universe rearranges itself, quietly.",
-    photo:     "",
-    emoji:     "🍼",
-    photoBg:   "linear-gradient(135deg,#3d1a5c,#9b7ec8)",
-    isCurrent: false,
+export const MEMORY = {
+  start: {
+    year: "2008",
+    src:  "/photos/2008.jpg",
+    alt:  BIRTHDAY_NAME + " as a baby, 2008",
   },
-  {
-    year:      "2012",
-    event:     "The Reader Awakens",
-    text:      "Words become her world. She discovers she can carry entire universes inside her and that words are the most powerful thing a person can hold.",
-    photo:     "",
-    emoji:     "📚",
-    photoBg:   "linear-gradient(135deg,#1a3a5c,#6b8ec8)",
-    isCurrent: false,
+  end: {
+    year: "2026",
+    src:  "/photos/2026.jpg",
+    alt:  BIRTHDAY_NAME + " at eighteen, 2026",
   },
-  {
-    year:      "2016",
-    event:     "The Artist Emerges",
-    text:      "She starts creating, finding that her hands can make the world look the way she feels it. Every creation is a small piece of her soul made visible.",
-    photo:     "",
-    emoji:     "🎨",
-    photoBg:   "linear-gradient(135deg,#3a2a1a,#c8a060)",
-    isCurrent: false,
-  },
-  {
-    year:      "2020",
-    event:     "The Dreamer Grows",
-    text:      "Through a world turned upside-down, she stays curious, tender, and endlessly creative. Some people shrink in hard times. She only bloomed.",
-    photo:     "",
-    emoji:     "🌸",
-    photoBg:   "linear-gradient(135deg,#1a3a2a,#60c890)",
-    isCurrent: false,
-  },
-  {
-    year:      "2024",
-    event:     "Eighteen ✦",
-    text:      "The most beautiful chapter begins. Every version of her that existed before was preparing for this: the one who knows who she is and is no longer afraid of it.",
-    photo:     "",
-    emoji:     "✨",
-    photoBg:   "linear-gradient(135deg,#7b5ea7,#d4c5e8)",
-    isCurrent: true,
-  },
-  // ── ADD MORE TIMELINE ENTRIES HERE ───────────────────────────────
-];
+};
 
 // ─────────────────────────────────────────
 //  VOICE NOTES / AUDIO (Section 8)

@@ -12,7 +12,7 @@ import {
   HERO,
   LANGUAGE_CARDS,
   POLAROIDS,
-  TIMELINE,
+  MEMORY,
   AUDIO_TRACKS,
   LITTLE_THINGS,
   FOUR_WORDS,
@@ -149,113 +149,283 @@ function renderPolaroids() {
 }
 
 /* ══════════════════════════════════════════════════
-   4. RENDER TIMELINE
+   4. THE MEMORY — 2008 → 2026
+
+   One stroke of ink leaves the first photograph, carries eighteen
+   years, and finishes as the rule above the letter. It is the same
+   path throughout; there is no separate divider.
+
+   Three things this depends on, all of them learned the hard way:
+
+   · The path is built from the *measured* corners of the rendered
+     prints, so it meets them at any viewport, and is rebuilt on
+     resize. Nothing is hard-coded.
+   · The reveal is keyed to scroll through an arc-length table, so
+     the pen's on-screen speed comes from the geometry: shallow
+     stretches hurry, the vertical descent is deliberate. Tempo is
+     not scripted.
+   · The photograph scrolls upward one viewport-height for every
+     viewport-height scrolled, so the ending cannot be slowed by
+     spending more scroll — it would push her out of frame. The
+     slowness comes from the pen stopping instead.
 ══════════════════════════════════════════════════ */
-function renderTimeline() {
-  const wrap = el("timelineWrap");
-  if (!wrap) return;
-  wrap.innerHTML = "";
+const MEM = {
+  DW: 1000, DH: 3200,          /* design space of the section        */
+  MID_T: [0.14, 0.36, 0.56, 0.76, 0.90],
+  DEV:   [-26, -46, -38, -16, -4],   /* narrow band, left of centre  */
+  N: 800,
+  STALL: 0.22,                 /* scroll spent where nothing descends */
+  ENDSLOW: 1.28,               /* the approach costs more scroll      */
+  DWELL: 0.05,                 /* the silence after contact           */
+  PRE: 0.05,                   /* paper warms before contact          */
+  POST: 0.105,                 /* and resolves after the silence      */
+  PENLINE: 0.62,               /* where on screen the pen tip rides   */
+  RATE: 6,                     /* how fast the pen catches the scroll */
+};
 
-  TIMELINE.forEach((t, i) => {
-    const isLeft = i % 2 === 0;
-    const item = make("div", `timeline-item ${isLeft ? "reveal-left" : "reveal-right"}`);
-    const dot  = make("div", `timeline-dot${t.isCurrent ? " timeline-dot--current" : ""}`);
-    const card = make("div", `timeline-card${t.isCurrent ? " timeline-card--current" : ""}`);
+let memPath: SVGPathElement | null = null;
+let memKeys = new Float32Array(MEM.N);
+let memLens = new Float32Array(MEM.N);
+let memLen = 0, memPen = 0;
+let memTop = 0, memH = 1, memVh = 1, memReady = false;
+let memContact = 0.8, memHoldTo = 0.85, memDevFrom = 0, memDevTo = 1;
+let memRaf: number | null = null;
 
-    const photoPH = `<div class="timeline-placeholder" style="background:${t.photoBg}"><span>${t.emoji}</span></div>`;
-    const photoHTML = t.photo
-      ? `<img src="${t.photo}" alt="${t.event}" style="width:100%;height:120px;object-fit:cover;">`
-      : photoPH;
+function renderMemory() {
+  const section = el("memory");
+  memPath = document.getElementById("memoryPath") as SVGPathElement | null;
+  if (!section || !memPath) return;
 
-    card.innerHTML = `
-      <div class="timeline-photo">${photoHTML}</div>
-      <div class="timeline-content">
-        <span class="timeline-year">${t.year}</span>
-        <h3 class="timeline-event">${t.event}</h3>
-        <p class="timeline-text">${t.text}</p>
-      </div>`;
-
-    card.dataset.timelineIdx = String(i);
-    item.appendChild(dot);
-    item.appendChild(card);
-    wrap.appendChild(item);
-  });
-}
-
-/* ══════════════════════════════════════════════════
-   TIMELINE — mobile scroll animations
-══════════════════════════════════════════════════ */
-function initTimelineMobile() {
-  if (window.innerWidth > 640) return;
-
-  const items = document.querySelectorAll<HTMLElement>(".timeline-item");
-  if (!items.length) return;
-
-  const obs = new IntersectionObserver(
-    entries => entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add("is-visible");
-        obs.unobserve(e.target); // animate in once, stay visible
-      }
-    }),
-    { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
-  );
-
-  items.forEach(item => obs.observe(item));
-}
-
-/* ══════════════════════════════════════════════════
-   TIMELINE LIGHTBOX — tap any card to enlarge
-══════════════════════════════════════════════════ */
-function initTimelineLightbox() {
-  const lb      = el("lightbox");
-  const lbPh    = el<HTMLElement>("lightboxPlaceholder");
-  const lbCap   = el("lightboxCaption");
-  const lbContent = lb?.querySelector<HTMLElement>(".lightbox-content");
-  if (!lb || !lbPh || !lbCap || !lbContent) return;
-
-  function openTimeline(idx: number) {
-    const t = TIMELINE[idx];
-    if (!t) return;
-
-    lbContent.classList.add("lightbox-content--timeline");
-
-    if (t.photo) {
-      lbPh.style.cssText = "";
-      lbPh.innerHTML = `<img src="${t.photo}" alt="${t.event}" style="width:100%;height:auto;max-height:55vh;object-fit:contain;display:block;">`;
-    } else {
-      lbPh.innerHTML = "";
-      lbPh.style.cssText = `background:${t.photoBg};display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;font-size:clamp(4rem,12vw,7rem);`;
-      lbPh.textContent = t.emoji;
-    }
-
-    lbCap.innerHTML = `
-      <span style="display:block;font-size:0.65rem;letter-spacing:0.2em;color:var(--purple-light);text-transform:uppercase;margin-bottom:0.3rem">${t.year}</span>
-      <span style="display:block;font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,3vw,1.6rem);font-weight:600;color:var(--cream);margin-bottom:0.5rem">${t.event}</span>
-      <span style="display:block;font-size:0.875rem;color:var(--cream-dim);line-height:1.7">${t.text}</span>`;
-
-    lb.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeTimeline() {
-    lb.classList.add("hidden");
-    document.body.style.overflow = "";
-    lbContent.classList.remove("lightbox-content--timeline");
-    lbPh.innerHTML = "";
-    lbPh.style.cssText = "";
-    lbCap.innerHTML = "";
-  }
-
-  el("timelineWrap")?.addEventListener("click", e => {
-    const card = (e.target as HTMLElement).closest<HTMLElement>(".timeline-card");
-    if (card?.dataset.timelineIdx !== undefined) {
-      openTimeline(Number(card.dataset.timelineIdx));
+  // fill the two photographs from config
+  ([["Start", MEMORY.start], ["End", MEMORY.end]] as const).forEach(([k, p]) => {
+    setText(`memory${k}Year`, p.year);
+    const holder = el(`memory${k}Img`);
+    if (holder && p.src) {
+      const img = new Image();
+      img.src = p.src;
+      img.alt = p.alt;
+      // if the file is not there yet the placeholder card simply stays
+      img.onerror = () => img.remove();
+      holder.appendChild(img);
     }
   });
 
-  el("lightboxClose")?.addEventListener("click", closeTimeline);
-  el("lightboxBackdrop")?.addEventListener("click", closeTimeline);
+  memBuild();
+  window.addEventListener("resize", memBuild);
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    memPath.style.strokeDasharray = "none";
+    memPath.style.strokeDashoffset = "0";
+    memSetPhotos(1);
+    return;
+  }
+
+  memSetPhotos(0);
+  if (memReady) memPen = memTarget();
+  memPaint();
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => (e.isIntersecting ? memStart() : memStop()));
+  }, { rootMargin: "30% 0px 30% 0px" });
+  io.observe(section);
+
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+    if (y + memVh > memTop - memVh && y < memTop + memH + memVh) memStart();
+  }, { passive: true });
+}
+
+/** Catmull-Rom through the waypoints; shape comes from the points
+    alone, so it stays smooth at any viewport without tuned angles. */
+function memCurve(P: number[][]): string {
+  const n = P.length, m: number[][] = [];
+  for (let i = 0; i < n; i++) {
+    const a = P[Math.max(0, i - 1)], b = P[Math.min(n - 1, i + 1)];
+    m.push([(b[0] - a[0]) * 0.5, (b[1] - a[1]) * 0.5]);
+  }
+  let d = `M ${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+  for (let i = 0; i < n - 1; i++) {
+    const p = P[i], q = P[i + 1];
+    const chord = Math.hypot(q[0] - p[0], q[1] - p[1]);
+    const k1 = Math.min(1, chord * 0.4 / (Math.hypot(m[i][0], m[i][1]) / 3 || 1e-6));
+    const k2 = Math.min(1, chord * 0.4 / (Math.hypot(m[i + 1][0], m[i + 1][1]) / 3 || 1e-6));
+    d += ` C ${(p[0] + m[i][0] / 3 * k1).toFixed(1)} ${(p[1] + m[i][1] / 3 * k1).toFixed(1)}`
+       + `, ${(q[0] - m[i + 1][0] / 3 * k2).toFixed(1)} ${(q[1] - m[i + 1][1] / 3 * k2).toFixed(1)}`
+       + `, ${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+  }
+  return d;
+}
+
+function memBuild() {
+  const section = el("memory");
+  if (!section || !memPath) return;
+  const h = window.innerHeight, sh = section.offsetHeight, sw = section.offsetWidth;
+  if (!h || !sh || !sw) { memReady = false; return; }   // hidden / pre-render
+
+  const S = section.getBoundingClientRect();
+  const rect = (id: string) => {
+    const e = el(id); if (!e) return null;
+    const r = e.getBoundingClientRect();
+    return {
+      x1: (r.left  - S.left) / S.width  * MEM.DW, x2: (r.right  - S.left) / S.width  * MEM.DW,
+      y1: (r.top   - S.top)  / S.height * MEM.DH, y2: (r.bottom - S.top)  / S.height * MEM.DH,
+    };
+  };
+  const startPrint = rect("memoryStart")!, endPrint = rect("memoryEnd")!;
+  const sImg = rect("memoryStartImg")!, eImg = rect("memoryEndImg")!;
+  if (!startPrint || !endPrint) return;
+  const margin = 10 / sw * MEM.DW;
+
+  // begins on the first print's own lower margin, beneath the picture
+  const A: number[] = [sImg.x2 - (sImg.x2 - sImg.x1) * 0.22, sImg.y2 + (startPrint.y2 - sImg.y2) * 0.4];
+  // contact: the waiting print's top-left corner
+  const C: number[] = [eImg.x1 - margin * 0.5, eImg.y1 - margin * 0.5];
+
+  const room = sw >= 700 ? 1 : 0.5;
+  const P: number[][] = [A];
+  MEM.MID_T.forEach((t, i) => {
+    const x = A[0] + (C[0] - A[0]) * t + MEM.DEV[i] * room;
+    P.push([Math.max(70, Math.min(MEM.DW - 70, x)), A[1] + (C[1] - A[1]) * t]);
+  });
+  P.push(C);
+  // down the print's own margin — never across the picture
+  P.push([C[0], (eImg.y1 + eImg.y2) / 2]);
+  P.push([C[0], eImg.y2 + margin * 0.4]);
+  // and out, turning into the rule above the letter
+  P.push([endPrint.x1 - (endPrint.x2 - endPrint.x1) * 0.10, endPrint.y2 + 34]);
+  P.push([endPrint.x1 - (endPrint.x2 - endPrint.x1) * 0.55, endPrint.y2 + 52]);
+  P.push([Math.max(90, endPrint.x1 - (endPrint.x2 - endPrint.x1) * 1.05), endPrint.y2 + 60]);
+
+  const keep = memLen > 0 ? memPen : 0;
+  memPath.setAttribute("d", memCurve(P));
+  memLen = memPath.getTotalLength();
+
+  const step = memLen / (MEM.N - 1);
+  let contactLen = memLen;
+  for (let i = 1; i < MEM.N; i++) {
+    if (memPath.getPointAtLength(step * i).y >= C[1]) { contactLen = step * i; break; }
+  }
+  const slowFrom = contactLen - memLen * 0.12;
+
+  // base cost of each step in scroll, plus the extras
+  const base = new Float64Array(MEM.N), extra = new Float64Array(MEM.N);
+  let extraTotal = MEM.DWELL, dwellAt = -1;
+  let prev = memPath.getPointAtLength(0);
+  for (let i = 1; i < MEM.N; i++) {
+    const len = step * i, pt = memPath.getPointAtLength(len);
+    base[i] = Math.max((pt.y - prev.y) / MEM.DH, (step / MEM.DH) * MEM.STALL);
+    if (len >= slowFrom) { extra[i] = base[i] * (MEM.ENDSLOW - 1); extraTotal += extra[i]; }
+    if (dwellAt < 0 && len >= contactLen) dwellAt = i;
+    prev = pt;
+  }
+  if (dwellAt < 0) dwellAt = MEM.N - 1;
+
+  // cap the drift, or the pen finishes above the fold
+  const cap = 0.52 * (h / sh);
+  let dwell = MEM.DWELL;
+  if (extraTotal > cap) {
+    const k = cap / extraTotal;
+    dwell *= k;
+    for (let i = 0; i < MEM.N; i++) extra[i] *= k;
+  }
+
+  // start the schedule at the ink's own height, so one unit of
+  // descent really is one unit of scroll and the tip rides the pen line
+  let key = memPath.getPointAtLength(0).y / MEM.DH;
+  memKeys[0] = key; memLens[0] = 0;
+  for (let i = 1; i < MEM.N; i++) {
+    if (i === dwellAt) { memContact = key; key += dwell; }
+    key += base[i] + extra[i];
+    memKeys[i] = key; memLens[i] = step * i;
+  }
+
+  memHoldTo  = memContact + dwell;
+  memDevFrom = memContact - MEM.PRE;
+  memDevTo   = memHoldTo + MEM.POST;
+
+  memTop = S.top + window.scrollY;
+  memH = sh; memVh = h; memReady = true;
+  memPen = keep;
+}
+
+function memLookup(pf: number): number {
+  if (pf <= memKeys[0]) return 0;
+  if (pf >= memKeys[MEM.N - 1]) return memLen;
+  let lo = 0, hi = MEM.N - 1;
+  while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (memKeys[mid] <= pf) lo = mid; else hi = mid; }
+  const t = (pf - memKeys[lo]) / (memKeys[hi] - memKeys[lo] || 1);
+  return memLens[lo] + t * (memLens[hi] - memLens[lo]);
+}
+
+function memTarget(): number {
+  return (window.scrollY + MEM.PENLINE * memVh - memTop) / memH;
+}
+
+function memSmooth(t: number): number {
+  t = t < 0 ? 0 : t > 1 ? 1 : t;
+  return t * t * (3 - 2 * t);
+}
+
+let memLastStart = -1, memLastEnd = -1;
+
+/** The first photograph settles; the second develops. */
+function memSetPhotos(_force?: number) {
+  const a = el("memoryStartImg"), b = el("memoryEndImg");
+  if (!a || !b) return;
+
+  const sp = memSmooth(memPen / 0.85);
+  if (Math.abs(sp - memLastStart) > 0.005) {
+    memLastStart = sp;
+    a.style.filter = `sepia(${(0.12 * sp).toFixed(3)}) `
+      + `saturate(${(1 - 0.06 * sp).toFixed(3)}) contrast(${(1 - 0.04 * sp).toFixed(3)})`;
+  }
+
+  let d: number;
+  if (memPen <= memDevFrom)        d = 0;
+  else if (memPen < memContact)    d = memSmooth((memPen - memDevFrom) / (memContact - memDevFrom)) * 0.08;
+  else if (memPen < memHoldTo)     d = 0.08 + ((memPen - memContact) / (memHoldTo - memContact)) * 0.02;
+  else                             d = 0.10 + memSmooth((memPen - memHoldTo) / (memDevTo - memHoldTo)) * 0.90;
+
+  if (Math.abs(d - memLastEnd) > 0.004) {
+    memLastEnd = d;
+    const gray = d < 0.5 ? 1 : Math.max(0.08, 1 - ((d - 0.5) / 0.5) * 0.92);
+    b.style.opacity = Math.min(1, d / 0.4).toFixed(3);
+    b.style.filter =
+        `grayscale(${gray.toFixed(3)}) sepia(${Math.max(0, 0.45 - d * 0.45).toFixed(3)}) `
+      + `brightness(${(1.5 - 0.5 * d).toFixed(3)}) contrast(${(0.3 + 0.68 * d).toFixed(3)}) `
+      + `saturate(${(0.55 + 0.37 * d).toFixed(3)})`;
+  }
+}
+
+function memPaint() {
+  if (!memPath || !memLen) return;
+  memPath.style.strokeDashoffset = String(100 * (1 - memLookup(memPen) / memLen));
+}
+
+function memFrame(now: number) {
+  const dt = Math.min((now - memLastT) / 1000, 0.05);
+  memLastT = now;
+  if (!memReady) memBuild();
+  const t = memReady ? memTarget() : 0;
+  if (!isFinite(memPen)) memPen = t;
+  if (isFinite(t)) {
+    memPen += (t - memPen) * (1 - Math.exp(-dt * MEM.RATE));
+    if (Math.abs(t - memPen) < 0.0002) memPen = t;
+    memPaint();
+    memSetPhotos();
+  }
+  memRaf = requestAnimationFrame(memFrame);
+}
+let memLastT = 0;
+
+function memStart() {
+  if (memRaf === null) { memLastT = performance.now(); memRaf = requestAnimationFrame(memFrame); }
+}
+function memStop() {
+  if (memRaf !== null) {
+    cancelAnimationFrame(memRaf); memRaf = null;
+    if (memReady) { memPen = memTarget(); memPaint(); memSetPhotos(); }
+  }
 }
 
 /* ══════════════════════════════════════════════════
@@ -362,6 +532,9 @@ function transitionToMain() {
     setFinalDate();
     initScrollReveal();
     initFourWords();
+    // Only now does #main-content have a size, so the memory section
+    // can measure its own photographs and build the path.
+    renderMemory();
     // Start listening for scroll-to-bottom AFTER main is revealed
     initHiddenLetter();
   }, 950);
@@ -944,9 +1117,6 @@ document.addEventListener("DOMContentLoaded", () => {
   applyStaticText();
   renderLanguageCards();
   renderPolaroids();
-  renderTimeline();
-  initTimelineMobile();
-  initTimelineLightbox();
   renderAudioCards();
   renderLittleThings();
   renderFourWords();

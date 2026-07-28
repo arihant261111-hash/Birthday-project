@@ -57,7 +57,7 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   line-height: 1.15;
 }
 
-.eyebrow, .lang-label, .timeline-year {
+.eyebrow, .lang-label {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
@@ -66,7 +66,7 @@ h1, h2, h3, .unlock-headline, .hero-headline,
 }
 
 .polaroid-caption, .final-sig-name, .final-sig-from,
-.timeline-event, .thing-value {
+.thing-value {
   font-family: 'Caveat', cursive;
 }
 
@@ -687,135 +687,81 @@ h1, h2, h3, .unlock-headline, .hero-headline,
 }
 
 
-/* ── Timeline lightbox variant ── */
-.lightbox-content--timeline .lightbox-photo {
-  background: var(--navy-card);
-  border: 1px solid rgba(123,94,167,0.35);
-  padding: 12px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px var(--glow);
-}
-.lightbox-content--timeline .lightbox-caption {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.875rem;
-  letter-spacing: 0;
-  margin-top: 1rem;
-  text-align: left;
-}
-
 /* ═══════════════════════════════════════════════════════════════
-   SECTION 6 — TIMELINE
+   SECTION 6 — THE MEMORY (2008 → 2026)
+   Two photographs, one stroke of ink. The ink is drawn on the
+   prints' own margins and never crosses a picture — that is
+   enforced by the path geometry, not by stacking.
    ═══════════════════════════════════════════════════════════════ */
-.section--timeline {
+.section--memory {
+  position: relative;
+  height: 320vh;
+  padding: 0;
   background: transparent;
+  overflow: visible;
 }
 
-.timeline {
-  position: relative;
-  max-width: 780px;
-  margin: 3rem auto 0;
-  padding: 0 1.5rem;
-}
-
-/* Vertical connecting line */
-.timeline::before {
-  content: '';
+.memory-ink {
   position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, var(--purple) 15%, var(--purple-light) 50%, var(--purple) 85%, transparent);
-  transform: translateX(-50%);
-}
-
-.timeline-item {
-  position: relative;
-  margin-bottom: 3.5rem;
-  display: flex;
-  align-items: flex-start;
-}
-
-.timeline-item:nth-child(odd)  { flex-direction: row; padding-right: calc(50% + 30px); }
-.timeline-item:nth-child(even) { flex-direction: row-reverse; padding-left: calc(50% + 30px); }
-
-.timeline-dot {
-  position: absolute;
-  left: 50%;
-  top: 24px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--purple);
-  border: 2px solid var(--navy-card);
-  box-shadow: 0 0 12px var(--glow-strong);
-  transform: translateX(-50%);
-  z-index: 2;
-  flex-shrink: 0;
-}
-.timeline-dot--current {
-  width: 18px;
-  height: 18px;
-  top: 22px;
-  background: var(--lavender);
-  box-shadow: 0 0 20px rgba(212,197,232,0.7);
-}
-
-.timeline-card {
-  background: var(--navy-card);
-  border: 1px solid rgba(123,94,167,0.25);
-  border-radius: 4px;
-  overflow: hidden;
-  flex: 1;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-}
-.timeline-card:hover {
-  border-color: rgba(123,94,167,0.5);
-  box-shadow: 0 0 20px var(--glow);
-}
-.timeline-card--current {
-  border-color: rgba(212,197,232,0.4);
-  box-shadow: 0 0 20px rgba(212,197,232,0.15);
-}
-
-.timeline-photo {
-  width: 100%;
-  height: 120px;
-  overflow: hidden;
-}
-.timeline-placeholder {
+  inset: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-}
-
-.timeline-content {
-  padding: 1.2rem 1.4rem 1.4rem;
-}
-
-.timeline-year {
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  color: var(--purple-light);
   display: block;
-  margin-bottom: 0.3rem;
+  overflow: visible;
+  z-index: 3;
+}
+#memoryPath {
+  fill: none;
+  stroke: var(--lavender);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.85;
+  /* hidden until the geometry is measured, so no flash of a full line */
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
 }
 
-.timeline-event {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--cream);
-  margin-bottom: 0.5rem;
+.memory-photo {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+}
+.memory-photo--start { left: 8%;  top: 4%;    width: clamp(210px, 30vw, 540px); }
+.memory-photo--end   { left: 48%; bottom: 6%; width: clamp(230px, 34vw, 600px); }
+
+/* A print, waiting. Visible as an object long before it holds a
+   picture — that is what makes the arrival a recognition rather
+   than a surprise. */
+.memory-print {
+  background: var(--cream);
+  padding: 10px 10px 12px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.4);
+}
+.memory-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: linear-gradient(160deg, #2a2144 0%, #1b1630 100%);
+  position: relative;
+  z-index: 4;
+}
+.memory-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.timeline-text {
-  font-size: 0.875rem;
-  color: var(--cream-dim);
-  line-height: 1.7;
+.memory-year {
+  margin-top: 0.7em;
+  text-align: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.34em;
+  color: var(--purple-light);
+  opacity: 0.65;
+  position: relative;
+  z-index: 4;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1371,54 +1317,11 @@ button, [role="button"], .polaroid, .accordion-btn,
   .lang-dots { margin-top: 1.2rem; }
 
   /* ── Timeline — vertical stack with animations (mobile only) ── */
-  .timeline::before {
-    left: 10px;
-    background: linear-gradient(180deg, transparent, var(--purple) 10%, var(--purple-light) 50%, var(--purple) 90%, transparent);
-  }
-  .timeline { padding: 0 0 0 28px; margin: 1.5rem 1rem 0; max-width: 100%; }
-  .timeline-item,
-  .timeline-item:nth-child(odd),
-  .timeline-item:nth-child(even) {
-    flex-direction: column !important;
-    padding: 0 !important;
-    margin-bottom: 1.4rem;
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
-  }
-  .timeline-item.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-  .timeline-item:nth-child(1) { transition-delay: 0s; }
-  .timeline-item:nth-child(2) { transition-delay: 0.12s; }
-  .timeline-item:nth-child(3) { transition-delay: 0.24s; }
-  .timeline-item:nth-child(4) { transition-delay: 0.36s; }
-  .timeline-item:nth-child(5) { transition-delay: 0.48s; }
-  .timeline-dot {
-    left: -24px;
-    top: 18px;
-    transform: translateX(0) scale(0);
-    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.2s;
-  }
-  .timeline-dot--current { left: -26px; top: 16px; }
-  .timeline-item.is-visible .timeline-dot { transform: scale(1); }
-  .timeline-card {
-    width: 100%;
-    cursor: pointer;
-  }
-  .timeline-card::after {
-    content: 'tap to enlarge ✦';
-    display: block;
-    text-align: center;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    color: var(--purple-light);
-    opacity: 0.6;
-    padding: 0.3rem 0 0.6rem;
-  }
-  .timeline-photo { height: 120px; }
-
+  /* ── The memory ── */
+  /* The prints go wide and the ink runs in a narrower band, because
+     there is no room for lateral travel on a phone. */
+  .memory-photo--start { left: 6%;  width: 56vw; }
+  .memory-photo--end   { left: 30%; width: 61vw; }
   /* ── Accordion ── */
   .accordion-body p { padding: 0 0.5rem 1.2rem 3rem; }
 

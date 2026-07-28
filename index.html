@@ -295,13 +295,28 @@
       </section>
 
 
-      <!-- ── TIMELINE ── -->
-      <section id="timeline" class="section section--timeline">
-        <div class="section-inner">
-          <p  class="eyebrow reveal-up"      >A Life Lived Beautifully</p>
-          <h2 class="section-title reveal-up">Her Story, Chapter by Chapter</h2>
-        </div>
-        <div class="timeline" id="timelineWrap"></div>
+      <!-- ── THE MEMORY: 2008 → 2026 ──
+           Two photographs and one continuous stroke of ink between
+           them. No eyebrow, no title, no captions beyond the years —
+           anything else here would be the section talking about
+           itself. The path is built from the rendered geometry at
+           runtime (see renderMemory), so it always meets the corners
+           of the real prints, whatever size they are. -->
+      <section id="memory" class="section section--memory">
+        <svg class="memory-ink" viewBox="0 0 1000 3200"
+             preserveAspectRatio="none" aria-hidden="true">
+          <path id="memoryPath" d="" pathLength="100"/>
+        </svg>
+
+        <figure class="memory-photo memory-photo--start" id="memoryStart">
+          <div class="memory-print"><div class="memory-img" id="memoryStartImg"></div></div>
+          <figcaption class="memory-year" id="memoryStartYear"></figcaption>
+        </figure>
+
+        <figure class="memory-photo memory-photo--end" id="memoryEnd">
+          <div class="memory-print"><div class="memory-img" id="memoryEndImg"></div></div>
+          <figcaption class="memory-year" id="memoryEndYear"></figcaption>
+        </figure>
       </section>
 
 
