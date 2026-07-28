@@ -849,10 +849,15 @@ function initHiddenLetter() {
 
     // ── ACT 3: dissolve ────────────────────────────────────
     T(() => {
-      // Now the overlay background transitions from transparent navy → warm dark
-      // This is the moment the "website disappears"
-      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1)`;
-      overlay.style.background = "radial-gradient(ellipse at 50% 44%, #1f120a 0%, #120a05 55%, #080402 100%)";
+      // The warm light arrives by fading a layer in over the navy,
+      // rather than recolouring the overlay's own background. A
+      // gradient-to-gradient transition is not reliably interpolated
+      // and lands as a jump; opacity always cross-fades.
+      const wash = document.getElementById("lo-warmwash") as HTMLElement | null;
+      if (wash) {
+        wash.style.transition = `opacity ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1)`;
+        requestAnimationFrame(() => { wash.style.opacity = "1"; });
+      }
 
       // Whisper fades as the world changes
       const wt = document.getElementById("lo-whisperText");
@@ -871,7 +876,7 @@ function initHiddenLetter() {
       // Gradually fade the overlay IN over the dissolve duration
       // so the warm background reveals itself slowly
       overlay.style.opacity = "0";
-      overlay.style.transition = `background ${LETTER_T.dissolveDur}ms cubic-bezier(0.4,0,0.2,1), opacity ${LETTER_T.dissolveDur}ms ease`;
+      overlay.style.transition = `opacity ${LETTER_T.dissolveDur}ms ease`;
       requestAnimationFrame(() => { overlay.style.opacity = "1"; });
     }, LETTER_T.dissolveStart);
 

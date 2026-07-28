@@ -483,6 +483,13 @@
         </defs>
       </svg>
 
+      <!-- ACT 3: the warm wash. A separate layer that simply fades in,
+           rather than animating the overlay's own background — gradient
+           transitions are not reliably interpolated, and opacity is
+           GPU-composited, which is the rule the rest of this sequence
+           already follows. -->
+      <div id="lo-warmwash" class="lo-warmwash"></div>
+
       <!-- ACT 2: whisper line -->
       <div id="lo-whisper" class="lo-whisper">
         <p id="lo-whisperText" class="lo-whisper-text"></p>
