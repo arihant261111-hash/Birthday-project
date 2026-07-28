@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stroke — 2008 → 2026 prototype</title>
+
+<!--
+  STANDALONE PROTOTYPE — evaluates only the emotional rhythm of the
+  connecting stroke ("Concept 2 — The Signature").
+  No dependencies. Not part of the Vite build. Delete freely.
+
+  Coordinate system: viewBox 1000 x 2600, stretched to 100vw x 260vh
+  (preserveAspectRatio="none"). So 10 units = 1vh vertically and
+  1% of viewport width horizontally — the path is designed IN
+  viewport-relative space, which is what the layout brief asks for.
+  vector-effect:non-scaling-stroke keeps the ink at 2px regardless.
+
+  Scroll model: the "pen line" sits at 70% viewport height. The tip of
+  the stroke tracks that line via a y→arc-length lookup table, then a
+  rAF loop eases the drawn length toward that target so the pen lags
+  and settles — drawn, not filled. The horizontal underline has no
+  vertical progress, so it gets a synthetic progress key (stall
+  compensation), which makes it reveal ~4x faster than the body of
+  the path: the fast whip at the end of a real signature.
+-->
+
+<style>
+  :root{
+    --paper: #f9f5eb;
+    --ink:   #141f38;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:auto; }
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  /* stand-in for the final photo section that precedes this */
+  .lead{
+    height: 92vh;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .lead p{
+    font-size:.72rem; letter-spacing:.28em; text-transform:uppercase;
+    opacity:.32; text-align:center; padding:0 2rem;
+  }
+
+  /* the stroke section: 2.6 viewport heights */
+  .stroke-section{
+    position: relative;
+    height: 260vh;
+  }
+  .stroke-section svg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    display:block; overflow:visible;
+  }
+  #strokePath{
+    fill:none;
+    stroke: var(--ink);
+    stroke-width: 2;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* year anchors — HTML overlays (SVG text would distort under the
+     non-uniform viewBox stretch) */
+  .yr{
+    position:absolute;
+    transform: translate(-50%, -50%);
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    letter-spacing: .08em;
+    font-weight: 400;
+    user-select: none;
+  }
+  #yrStart{ left:20.5%; top:5.2%;  }
+  #yrEnd  { left:89%;   top:83.1%; }
+
+  /* stand-in for the birthday message the divider introduces */
+  .letter{
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 5vh 1.5rem 40vh;
+    text-align: center;
+    font-style: italic;
+    line-height: 2.1;
+    opacity: .72;
+  }
+  .letter .sig{ margin-top:2.2em; font-style:normal; opacity:.8; }
+  .letter .hint{
+    margin-top:14vh; font-style:normal; font-size:.7rem;
+    letter-spacing:.25em; text-transform:uppercase; opacity:.3;
+  }
+</style>
+</head>
+<body>
+
+<section class="lead">
+  <p>the last photo section ends here — keep scrolling</p>
+</section>
+
+<section class="stroke-section" id="strokeSection">
+  <svg viewBox="0 0 1000 2600" preserveAspectRatio="none" aria-hidden="true">
+    <!-- d is generated at init from the annotated waypoint list below.
+         pathLength="100" normalizes all dash math to percentages of the
+         path — critical, because Chromium computes dashes in SCREEN
+         pixels when vector-effect:non-scaling-stroke is set, so raw
+         user-unit dash values break on wide/hidpi screens. Normalized
+         values are correct in either space. Starts fully hidden. -->
+    <path id="strokePath" d="" pathLength="100"
+          style="stroke-dasharray:100 100; stroke-dashoffset:100;"/>
+  </svg>
+  <div class="yr" id="yrStart">2008</div>
+  <div class="yr" id="yrEnd">2026</div>
+</section>
+
+<section class="letter">
+  <p>placeholder for the birthday message —<br>
+     the divider above is the tail of the same stroke.<br>
+     what matters is how arriving here felt.</p>
+  <p class="sig">— A.</p>
+  <p class="hint">scroll back up to replay</p>
+</section>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ────────────────────────────────────────────────
+     THE PATH — designed, not generated.
+     Each waypoint: position, direction of travel `a`
+     (degrees, 0 = right, 90 = straight down), handle
+     lengths in/out, and the reason it exists.
+     G1 continuity is guaranteed by construction:
+     both handles at a joint share one tangent.
+  ──────────────────────────────────────────────── */
+  var W = [
+    // entry: pen touches down beneath "2008", already moving — a life
+    // doesn't start from rest. Steep writing slant.
+    {x:205,  y:205,  a:72,  ho:120},
+
+    // mid of the opening connecting stroke. The slant eases a few
+    // degrees — the only event in years that pass without event.
+    {x:395,  y:505,  a:63,  hi:110, ho:110},
+
+    // approaching the first letterform: the slant shallows, the pen
+    // prepares to turn. End of the opening calm (~age 10).
+    {x:585,  y:760,  a:48,  hi:100, ho:70},
+
+    // FIRST LETTERFORM (small, narrow — the first things that
+    // mattered). Rightmost point of the gesture; the swing right
+    // turns downward here.
+    {x:655,  y:880,  a:95,  hi:60,  ho:55},
+
+    // turning through the letter's counter-stroke: now heading
+    // down-left. Still soft, still small.
+    {x:600,  y:990,  a:128, hi:50,  ho:75},
+
+    // exit of the first letterform, committed down-left.
+    {x:500,  y:1105, a:118, hi:70,  ho:95},
+
+    // second calm: a long quiet run down-left, slant drifting toward
+    // vertical. The years between.
+    {x:375,  y:1300, a:105, hi:110, ho:90},
+
+    // approaching the working passage: nearly vertical, about to turn.
+    // (kept far from its neighbours so the 105°→55° reversal spreads
+    // over ~280 units of travel instead of kinking)
+    {x:310,  y:1445, a:88,  hi:80,  ho:75},
+
+    // THE WORKING PASSAGE (adolescence — the pen works hardest here).
+    // First turn: the stroke swings right out of the vertical.
+    {x:345,  y:1580, a:55,  hi:70,  ho:70},
+
+    // the widest, shallowest sweep in the piece — the most horizontal
+    // moment of the whole path. (Shallow slant = the pen visibly
+    // rushes here, because arc length per unit of scroll is highest.)
+    {x:455,  y:1665, a:30,  hi:75,  ho:85},
+
+    // the sweep continues and begins to steepen: second gentle turn.
+    {x:600,  y:1720, a:42,  hi:80,  ho:75},
+
+    // exiting the working passage with the slant set for the finale.
+    {x:700,  y:1810, a:62,  hi:70,  ho:90},
+
+    // THE COMMIT: the longest, straightest run on the page. Bends
+    // spaced far apart, steepening continuously. Near-vertical =
+    // the pen at its most deliberate — the pause before a flourish.
+    {x:730,  y:1970, a:76,  hi:100, ho:130},
+
+    // passing just left of "2026" — nearly vertical.
+    {x:770,  y:2160, a:86,  hi:130, ho:110},
+
+    // the signature ends; the pen begins the underline turn,
+    // leaning slightly left as it drops.
+    {x:760,  y:2320, a:100, hi:90,  ho:70},
+
+    // THE FLOURISH: turning through the bottom, exactly the way a
+    // hand sweeps under a signed name.
+    {x:690,  y:2420, a:150, hi:60,  ho:80},
+
+    // the underline proper: sweeping left beneath the years. This is
+    // the fastest-revealing part of the whole path (stall
+    // compensation below) — the signature's whip.
+    {x:540,  y:2452, a:176, hi:90,  ho:110},
+
+    // the rule dies at its left end in a faint settle. y creeps down
+    // ~1vh over the rule so it reads hand-drawn, never ruled.
+    {x:320,  y:2464, a:178, hi:130}
+  ];
+
+  function buildD(){
+    var d = "M " + W[0].x + " " + W[0].y;
+    for (var i = 0; i < W.length - 1; i++){
+      var p = W[i], q = W[i+1];
+      var pa = p.a * Math.PI/180, qa = q.a * Math.PI/180;
+      /* clamp handles: if their combined reach exceeds 80% of the
+         chord, scale both down proportionally. Preserves the designed
+         tension ratios but makes curvature pinches (tight kinks from
+         overshooting control points) geometrically impossible. */
+      var chord = Math.hypot(q.x - p.x, q.y - p.y);
+      var scale = Math.min(1, (0.8 * chord) / (p.ho + q.hi));
+      var ho = p.ho * scale, hi = q.hi * scale;
+      var c1x = p.x + Math.cos(pa) * ho, c1y = p.y + Math.sin(pa) * ho;
+      var c2x = q.x - Math.cos(qa) * hi, c2y = q.y - Math.sin(qa) * hi;
+      d += " C " + c1x.toFixed(1) + " " + c1y.toFixed(1)
+         + ", "  + c2x.toFixed(1) + " " + c2y.toFixed(1)
+         + ", "  + q.x + " " + q.y;
+    }
+    return d;
+  }
+
+  var path    = document.getElementById("strokePath");
+  var section = document.getElementById("strokeSection");
+  path.setAttribute("d", buildD());
+
+  var L = path.getTotalLength();
+
+  /* offset is written in pathLength-normalized units (100 = hidden,
+     0 = fully drawn) so it works no matter which space the browser
+     computes dashes in. `cur` stays in real path-length units. */
+  function paint(){
+    path.style.strokeDashoffset = String(100 * (1 - cur / L));
+  }
+
+  /* reduced motion: the finished drawing, no animation — and SAY SO,
+     because on a motion prototype a silent static page looks broken.
+     (Windows: Settings > Accessibility > Visual effects > Animation
+     effects OFF sets prefers-reduced-motion for every browser.) */
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    path.style.strokeDasharray = "none";
+    path.style.strokeDashoffset = "0";
+    var note = document.createElement("div");
+    note.textContent = "reduced motion is ON in your OS — showing the finished stroke, no animation";
+    note.style.cssText = "position:fixed;left:0;right:0;bottom:0;padding:.6em 1em;" +
+      "background:#141f38;color:#f9f5eb;font:italic .8rem Georgia,serif;" +
+      "text-align:center;z-index:9;opacity:.92;";
+    document.body.appendChild(note);
+    return;
+  }
+
+  /* ────────────────────────────────────────────────
+     PROGRESS LOOKUP: sample the path once, build a
+     monotonic key per sample.
+     - while the path descends, key = y fraction
+       (tip tracks the pen line on screen exactly)
+     - where y stalls (the horizontal underline),
+       key advances by arc length * STALL_RATE, so
+       the rule reveals ~4x faster than the body —
+       and finishes while still on screen.
+  ──────────────────────────────────────────────── */
+  var N = 900, VB_H = 2600, STALL_RATE = 0.25;
+  var keys = new Float32Array(N), lens = new Float32Array(N);
+  (function sample(){
+    var key = 0, dLen = L/(N-1);
+    for (var i = 0; i < N; i++){
+      var pt = path.getPointAtLength(dLen * i);
+      var yf = pt.y / VB_H;
+      if (yf > key + 1e-4) key = yf;
+      else key += (dLen / VB_H) * STALL_RATE;
+      keys[i] = key;
+      lens[i] = dLen * i;
+    }
+  })();
+
+  function lookup(pf){          /* pen fraction -> target length */
+    if (pf <= keys[0])   return 0;
+    if (pf >= keys[N-1]) return L;
+    var lo = 0, hi = N-1;
+    while (hi - lo > 1){
+      var mid = (lo + hi) >> 1;
+      if (keys[mid] <= pf) lo = mid; else hi = mid;
+    }
+    var t = (pf - keys[lo]) / (keys[hi] - keys[lo] || 1);
+    return lens[lo] + t * (lens[hi] - lens[lo]);
+  }
+
+  /* ────────────────────────────────────────────────
+     SCROLL → TARGET, with the pen's own easing.
+     No layout reads in the loop; geometry cached,
+     refreshed on resize only.
+  ──────────────────────────────────────────────── */
+  var PEN = 0.70;               /* pen line: 70% down the viewport   */
+  var RATE = 6;                 /* catch-up rate (1/s) — the lag     */
+  var secTop = 0, secH = 1, vh = 1, measured = false;
+
+  /* Pages can initialize in a hidden / zero-sized context (mobile
+     pre-render, background tab). Never accept zero dimensions —
+     they poison the math with 0/0 → NaN. Re-measure until valid. */
+  function measure(){
+    var h = window.innerHeight, sh = section.offsetHeight;
+    if (h === 0 || sh === 0) return;
+    var r = section.getBoundingClientRect();
+    secTop = r.top + window.scrollY;
+    secH   = sh;
+    vh     = h;
+    measured = true;
+  }
+  measure();
+  window.addEventListener("resize", measure);
+
+  function targetLen(){
+    var pf = (window.scrollY + PEN * vh - secTop) / secH;
+    return lookup(pf);
+  }
+
+  var cur = measured ? targetLen() : 0;   /* no jump if loaded mid-page */
+  paint();
+
+  var rafId = null, lastT = 0;
+
+  function frame(now){
+    var dt = Math.min((now - lastT) / 1000, 0.05);
+    lastT = now;
+    if (!measured) measure();             /* heal from hidden-load */
+    var t = measured ? targetLen() : 0;
+    if (!isFinite(cur)) cur = t;          /* never let NaN stick   */
+    if (isFinite(t)){
+      cur += (t - cur) * (1 - Math.exp(-dt * RATE));
+      if (Math.abs(t - cur) < 0.05) cur = t;
+      paint();
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function start(){
+    if (rafId === null){
+      lastT = performance.now();
+      rafId = requestAnimationFrame(frame);
+    }
+  }
+  function stop(){
+    if (rafId !== null){
+      cancelAnimationFrame(rafId);
+      rafId = null;
+      /* if the section was scrolled past while unobserved, land the
+         pen exactly where it should be */
+      cur = targetLen();
+      paint();
+    }
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ e.isIntersecting ? start() : stop(); });
+  }, { rootMargin: "25% 0px 25% 0px" });
+  io.observe(section);
+
+  /* belt-and-braces: if the observer is late or missed an entry
+     (throttled tab, quirky embedder), any scroll near the section
+     restarts the loop. start() is idempotent. */
+  window.addEventListener("scroll", function(){
+    var y = window.scrollY;
+    if (y + vh > secTop - vh && y < secTop + secH + vh) start();
+  }, { passive: true });
+
+  /* debug handle for verification; harmless to leave in a prototype */
+  window.__stroke = { L: L, keys: keys, lens: lens, path: path,
+                      target: targetLen, cur: function(){ return cur; },
+                      jump: function(){ cur = targetLen(); paint(); } };
+})();
+</script>
+</body>
+</html>

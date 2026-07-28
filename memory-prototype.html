@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
+<title>2008 → 2026</title>
+
+<!--
+  PROTOTYPE — the emotional bridge between her story and the letter.
+  Standalone. No dependencies. Not part of the Vite build.
+
+  Composed as a still first: two photographic prints and one line of ink
+  joining them, ending as the rule above the letter. Motion only reveals
+  that page; it is never the subject. With JavaScript dead you still get
+  the photographs and the letter — the CSS default state is "developed",
+  and JS is what makes the second print latent.
+
+  A/B — the only variable under test is the line's lateral territory.
+    A  narrow band, left of centre, close to the margin
+    B  bows out through the centre of the page mid-journey
+  Both share identical endpoints, identical arrival, identical timing,
+  so the comparison is honest. Press A or B, or use the control.
+-->
+
+<style>
+  :root{
+    color-scheme: only light;
+    --paper:  #f7f2e6;
+    --ink:    #16223f;
+    --print:  #fffdf7;
+    --quiet:  #6d6656;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* stand-in for the section that precedes this one */
+  .lead{ height:88vh; display:flex; align-items:center; justify-content:center; }
+  .lead p{
+    font-size:.66rem; letter-spacing:.3em; text-transform:uppercase;
+    opacity:.28; text-align:center; padding:0 2rem;
+  }
+
+  /* ── THE SECTION ───────────────────────────────────────────── */
+  .memory{ position:relative; height:320vh; }
+
+  /* The ink sits above the prints' paper — it is drawn ON the white
+     margin, the way a pen rests on a photograph's border. It never
+     reaches the picture itself; that is enforced by the geometry,
+     not by stacking. */
+  .memory svg{
+    position:absolute; inset:0; width:100%; height:100%;
+    display:block; overflow:visible; z-index:3;
+  }
+  #ink{
+    fill:none; stroke:var(--ink); stroke-width:1.25;
+    stroke-linecap:round; vector-effect:non-scaling-stroke;
+  }
+
+  /* The photographs are the largest objects on the page. That is the
+     whole hierarchy argument — the line cannot be the protagonist if
+     it is a tenth the size of what it connects. */
+  .photo{ position:absolute; z-index:2; }
+  .print{
+    background:var(--print);
+    padding:10px 10px 12px;
+    box-shadow:0 1px 3px rgba(22,34,63,.07);
+  }
+  .print .img{ width:100%; aspect-ratio:4/5; overflow:hidden; }
+  /* A real photograph drops straight in; if the file isn't there yet
+     the <img> removes itself and the gradient placeholder shows. */
+  .print .img img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .photo .yr{
+    margin-top:.7em; text-align:center;
+    font-size:.62rem; letter-spacing:.34em; color:var(--quiet); opacity:.55;
+  }
+
+  #baby { left:8%;  top:4%;    width:clamp(210px, 30vw, 540px); }
+  #adult{ left:48%; bottom:6%; width:clamp(230px, 34vw, 600px); }
+
+  /* placeholders — abstract, warm, deliberately unremarkable.
+     CSS default is the DEVELOPED state (see note at top). */
+  #babyImg{
+    background:
+      radial-gradient(58% 46% at 48% 34%, #efe3cd 0%, rgba(239,227,205,0) 72%),
+      linear-gradient(158deg, #ded0b6 0%, #b8a488 100%);
+    filter:sepia(.12) saturate(.94) contrast(.96);
+  }
+  #adultImg{
+    background:
+      radial-gradient(54% 42% at 50% 33%, #e8ded8 0%, rgba(232,222,216,0) 72%),
+      linear-gradient(162deg, #c3b3bd 0%, #86748c 100%);
+    filter:grayscale(.08) saturate(.92) contrast(.98);
+  }
+
+  /* ── THE LETTER (stand-in) ─────────────────────────────────── */
+  .letter{
+    max-width:30rem; margin:0 auto;
+    padding:7vh 1.6rem 42vh;
+    text-align:center; font-style:italic; line-height:2.15;
+    opacity:.7; font-size:1.02rem;
+  }
+  .letter .sig{ margin-top:2.4em; font-style:normal; opacity:.75; }
+
+  /* ── A/B control — prototype scaffolding only ─────────────── */
+  #ab{
+    position:fixed; right:14px; bottom:12px; z-index:9;
+    font:11px/1 Georgia,serif; letter-spacing:.16em;
+    color:var(--quiet); opacity:.4; user-select:none;
+  }
+  #ab button{
+    background:none; border:0; padding:4px 6px; cursor:pointer;
+    font:inherit; letter-spacing:inherit; color:inherit; opacity:.55;
+  }
+  #ab button.on{ opacity:1; text-decoration:underline; text-underline-offset:4px; }
+  #ab:hover{ opacity:.85; }
+
+  @media (max-width:700px){
+    .memory{ height:300vh; }
+    #baby { left:6%;  width:56vw; }
+    #adult{ left:30%; width:61vw; }
+  }
+</style>
+</head>
+<body>
+
+<section class="lead"><p>the section before this ends here</p></section>
+
+<section class="memory" id="memory">
+  <svg viewBox="0 0 1000 3200" preserveAspectRatio="none" aria-hidden="true">
+    <path id="ink" d=""/>
+  </svg>
+
+  <div class="photo" id="baby">
+    <div class="print"><div class="img" id="babyImg">
+      <img src="public/photos/2008.jpg" alt="Avline as a baby, 2008" onerror="this.remove()">
+    </div></div>
+    <div class="yr">2008</div>
+  </div>
+
+  <div class="photo" id="adult">
+    <div class="print"><div class="img" id="adultImg">
+      <img src="public/photos/2026.jpg" alt="Avline at eighteen, 2026" onerror="this.remove()">
+    </div></div>
+    <div class="yr">2026</div>
+  </div>
+</section>
+
+<section class="letter">
+  <p>the handwritten letter begins here —<br>
+     the rule above it is the same stroke<br>
+     that left the first photograph.</p>
+  <p class="sig">— A.</p>
+</section>
+
+<div id="ab"><button id="btnA">A</button><button id="btnB">B</button></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var DW = 1000, DH = 3200;
+
+  var section = document.getElementById("memory");
+  var path    = document.getElementById("ink");
+  var babyEl  = document.getElementById("baby");
+  var adultEl = document.getElementById("adult");
+  var babyImg = document.getElementById("babyImg");
+  var adultImg= document.getElementById("adultImg");
+
+  /* ── THE JOURNEY ─────────────────────────────────────────────
+     Five waypoints between the two photographs. They are placed
+     along the spine that joins the prints, displaced sideways by
+     a designed amount. A and B differ ONLY in those displacements,
+     so both versions leave the same corner, arrive at the same
+     corner, and hold for the same beat.
+
+     There are no letterforms and no sweeping gesture. Everything
+     that existed to be admired has been deleted; what is left is
+     a line that descends with a slight change of mind.          */
+  var MID_T  = [0.14, 0.36, 0.56, 0.76, 0.90];
+  var DEV_A  = [ -26,  -46,  -38,  -16,   -4];   /* narrow band, left of centre */
+  var DEV_B  = [  62,  144,  164,  104,   32];   /* bows through the page centre */
+
+  var variant = (localStorage.getItem("strokeVariant") === "B") ? "B" : "A";
+
+  /* ── runtime state ───────────────────────────────────────── */
+  var pts = [], L = 0;
+  var N = 800, keys = new Float32Array(N), lens = new Float32Array(N);
+  var secTop = 0, secH = 1, vh = 1, measured = false;
+  var contactKey = 0.8, devFrom = 0, devTo = 1, holdTo = 0;
+  var pen = 0;                       /* eased scroll fraction — drives everything */
+
+  /* Timing is bounded by a fact that is easy to miss: the photograph
+     scrolls upward one viewport-height for every viewport-height the
+     reader scrolls. So "spend more scroll on the ending" also means
+     "push the photograph out of frame". The ending's slowness has to
+     come from stillness — the pen stopping, and very little changing
+     per unit of scroll — not from stretching scroll distance.        */
+  var STALL = 0.22;   /* scroll spent on stretches with no descent   */
+  var ENDSLOW = 1.28; /* the last stretch costs this much more scroll */
+  var DWELL = 0.05;   /* the silence after contact, in scroll         */
+  var PRE = 0.05;     /* paper warms this long before contact         */
+  var POST = 0.105;   /* and resolves this long after the silence     */
+  var PENLINE = 0.62; /* where on screen the pen tip rides            */
+  var RATE = 6;       /* how quickly the pen catches the scroll       */
+
+  function dRect(el){
+    var r = el.getBoundingClientRect(), s = section.getBoundingClientRect();
+    return { x1:(r.left -s.left)/s.width *DW, x2:(r.right -s.left)/s.width *DW,
+             y1:(r.top  -s.top )/s.height*DH, y2:(r.bottom-s.top )/s.height*DH };
+  }
+
+  /* Catmull-Rom tangents → cubic Béziers. Shape comes from the
+     points alone, so the curve stays smooth at any viewport and
+     for either variant without hand-tuned angles. */
+  function buildD(P){
+    var n = P.length, m = [], i;
+    for (i = 0; i < n; i++){
+      var a = P[Math.max(0, i-1)], b = P[Math.min(n-1, i+1)];
+      m.push([(b[0]-a[0])*0.5, (b[1]-a[1])*0.5]);
+    }
+    var d = "M " + P[0][0].toFixed(1) + " " + P[0][1].toFixed(1);
+    for (i = 0; i < n-1; i++){
+      var p = P[i], q = P[i+1];
+      var chord = Math.hypot(q[0]-p[0], q[1]-p[1]);
+      var s1 = Math.min(1, chord*0.4/(Math.hypot(m[i][0],m[i][1])/3 || 1e-6));
+      var s2 = Math.min(1, chord*0.4/(Math.hypot(m[i+1][0],m[i+1][1])/3 || 1e-6));
+      var k1 = Math.min(1, s1), k2 = Math.min(1, s2);
+      d += " C " + (p[0]+m[i][0]/3*k1).toFixed(1) + " " + (p[1]+m[i][1]/3*k1).toFixed(1)
+         + ", "  + (q[0]-m[i+1][0]/3*k2).toFixed(1) + " " + (q[1]-m[i+1][1]/3*k2).toFixed(1)
+         + ", "  + q[0].toFixed(1) + " " + q[1].toFixed(1);
+    }
+    return d;
+  }
+
+  function rebuild(){
+    var h = window.innerHeight, sh = section.offsetHeight, sw = section.offsetWidth;
+    if (!h || !sh || !sw){ measured = false; return; }
+
+    var b  = dRect(babyEl.querySelector(".print"));
+    var bi = dRect(babyImg);
+    var a  = dRect(adultEl.querySelector(".print"));
+    var af = dRect(adultEl);
+    var mx = 10 / sw * DW;                 /* the print's white margin, in units */
+
+    /* The strand begins on the baby print's own margin, beneath the
+       picture, already moving — a pen resting on the corner of a
+       photograph. It slips off the print's own edge; there is no
+       separate "exit", because a flick there reads as a mark rather
+       than as a continuation. */
+    var S = [bi.x2 - (bi.x2-bi.x1)*0.22, bi.y2 + (b.y2-bi.y2)*0.5];
+
+    /* contact: the top-left corner of the waiting print */
+    var C = [a.x1 + mx*0.5, a.y1 + 10];
+
+    var dev = (variant === "B") ? DEV_B : DEV_A;
+    var room = sw >= 700 ? 1 : 0.5;
+    var P = [S];
+    for (var i = 0; i < MID_T.length; i++){
+      var t = MID_T[i];
+      var x = S[0] + (C[0]-S[0])*t + dev[i]*room;
+      var y = S[1] + (C[1]-S[1])*t;
+      P.push([Math.max(70, Math.min(DW-70, x)), y]);
+    }
+    P.push(C);
+    /* down the print's margin — never across the picture */
+    P.push([a.x1 + mx*0.5, (a.y1 + a.y2)/2]);
+    P.push([a.x1 + mx*0.5, a.y2 - 6]);
+    /* and out, turning into the rule above the letter */
+    P.push([a.x1 - (a.x2-a.x1)*0.10, af.y2 + 34]);
+    P.push([a.x1 - (a.x2-a.x1)*0.55, af.y2 + 52]);
+    P.push([Math.max(90, a.x1 - (a.x2-a.x1)*1.05), af.y2 + 60]);
+
+    var frac = L > 0 ? pen : 0;
+    path.setAttribute("d", buildD(P));
+    L = path.getTotalLength();
+
+    /* find the arc length of the contact point */
+    var contactLen = L, step = L/(N-1), prev = path.getPointAtLength(0), i2;
+    for (i2 = 1; i2 < N; i2++){
+      var q = path.getPointAtLength(step*i2);
+      if (q.y >= C[1]){ contactLen = step*i2; break; }
+    }
+    var slowFrom = contactLen - L*0.12;
+
+    /* Base schedule: the tip rides the pen line exactly, because one
+       unit of descent costs one unit of scroll. Everything added on
+       top of that (the slowdown, the silence) makes the tip fall
+       behind and drift up the screen — which is the whole point, but
+       it has a budget, or the gesture finishes above the fold.       */
+    var base = new Float64Array(N), extra = new Float64Array(N);
+    var extraTotal = DWELL, dwellAt = -1;
+    prev = path.getPointAtLength(0);
+    for (i2 = 1; i2 < N; i2++){
+      var len = step*i2, pt = path.getPointAtLength(len);
+      base[i2] = Math.max((pt.y - prev.y)/DH, (step/DH)*STALL);
+      if (len >= slowFrom){ extra[i2] = base[i2]*(ENDSLOW-1); extraTotal += extra[i2]; }
+      if (dwellAt < 0 && len >= contactLen) dwellAt = i2;
+      prev = pt;
+    }
+    if (dwellAt < 0) dwellAt = N-1;
+
+    /* cap the drift so the tip is still comfortably on screen when
+       the pen finishes — measured in viewport heights, so it adapts */
+    var cap = 0.52 * (h/sh), dwell = DWELL;
+    if (extraTotal > cap){
+      var k = cap/extraTotal;
+      dwell *= k;
+      for (i2 = 0; i2 < N; i2++) extra[i2] *= k;
+    }
+
+    /* start the schedule at the ink's own height on the page, so a
+       unit of descent really is a unit of scroll and the tip rides
+       the pen line instead of an offset copy of it */
+    var key = path.getPointAtLength(0).y / DH;
+    keys[0] = key; lens[0] = 0;
+    for (i2 = 1; i2 < N; i2++){
+      if (i2 === dwellAt){ contactKey = key; key += dwell; }
+      key += base[i2] + extra[i2];
+      keys[i2] = key; lens[i2] = step*i2;
+    }
+
+    holdTo  = contactKey + dwell;
+    devFrom = contactKey - PRE;
+    devTo   = holdTo + POST;
+
+    secTop = section.getBoundingClientRect().top + window.scrollY;
+    secH = sh; vh = h; measured = true;
+    pen = frac;
+  }
+
+  function lookup(pf){
+    if (pf <= keys[0]) return 0;
+    if (pf >= keys[N-1]) return L;
+    var lo = 0, hi = N-1;
+    while (hi - lo > 1){ var m = (lo+hi) >> 1; if (keys[m] <= pf) lo = m; else hi = m; }
+    var t = (pf - keys[lo]) / (keys[hi] - keys[lo] || 1);
+    return lens[lo] + t*(lens[hi] - lens[lo]);
+  }
+
+  function targetPen(){ return (window.scrollY + PENLINE*vh - secTop) / secH; }
+  function smooth(t){ t = t < 0 ? 0 : t > 1 ? 1 : t; return t*t*(3-2*t); }
+
+  var lastB = -1, lastD = -1;
+
+  function render(){
+    path.style.strokeDasharray = L + " " + L;
+    path.style.strokeDashoffset = (L - lookup(pen));
+
+    /* the first photograph settles — warms, eases — for almost the
+       whole journey. It never fades and never leaves. */
+    var bp = smooth(pen/0.85);
+    if (Math.abs(bp - lastB) > 0.005){
+      lastB = bp;
+      babyImg.style.filter = "sepia(" + (0.12*bp).toFixed(3) + ")"
+        + " saturate(" + (1 - 0.06*bp).toFixed(3) + ")"
+        + " contrast(" + (1 - 0.04*bp).toFixed(3) + ")";
+    }
+
+    /* the second photograph. Paper, then the faintest warmth as the
+       pen nears, then silence while it rests, then the answer. */
+    var d;
+    if (pen <= devFrom)      d = 0;
+    else if (pen < contactKey) d = smooth((pen-devFrom)/(contactKey-devFrom)) * 0.08;
+    else if (pen < holdTo)   d = 0.08 + ((pen-contactKey)/(holdTo-contactKey)) * 0.02;
+    else                     d = 0.10 + smooth((pen-holdTo)/(devTo-holdTo)) * 0.90;
+
+    if (Math.abs(d - lastD) > 0.004){
+      lastD = d;
+      var gray = d < 0.5 ? 1 : Math.max(0.08, 1 - ((d-0.5)/0.5)*0.92);
+      adultImg.style.opacity = Math.min(1, d/0.4).toFixed(3);
+      adultImg.style.filter =
+          "grayscale(" + gray.toFixed(3) + ")"
+        + " sepia("    + Math.max(0, 0.45 - d*0.45).toFixed(3) + ")"
+        + " brightness("+ (1.5 - 0.5*d).toFixed(3) + ")"
+        + " contrast(" + (0.3 + 0.68*d).toFixed(3) + ")"
+        + " saturate(" + (0.55 + 0.37*d).toFixed(3) + ")";
+    }
+  }
+
+  /* ── boot ─────────────────────────────────────────────────── */
+  rebuild();
+  window.addEventListener("resize", rebuild);
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced){
+    path.style.strokeDasharray = "none";
+    path.style.strokeDashoffset = "0";
+    /* CSS already holds the developed state — nothing else to do */
+  } else {
+    adultImg.style.opacity = "0";
+    if (measured) pen = targetPen();
+    render();
+
+    var raf = null, last = 0;
+    function frame(now){
+      var dt = Math.min((now-last)/1000, 0.05); last = now;
+      if (!measured) rebuild();
+      var t = measured ? targetPen() : 0;
+      if (!isFinite(pen)) pen = t;
+      if (isFinite(t)){
+        pen += (t - pen) * (1 - Math.exp(-dt*RATE));
+        if (Math.abs(t - pen) < 0.0002) pen = t;
+        render();
+      }
+      raf = requestAnimationFrame(frame);
+    }
+    function start(){ if (raf === null){ last = performance.now(); raf = requestAnimationFrame(frame); } }
+    function stop(){ if (raf !== null){ cancelAnimationFrame(raf); raf = null; pen = targetPen(); render(); } }
+
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ e.isIntersecting ? start() : stop(); });
+    }, { rootMargin:"30% 0px 30% 0px" }).observe(section);
+
+    window.addEventListener("scroll", function(){
+      var y = window.scrollY;
+      if (y + vh > secTop - vh && y < secTop + secH + vh) start();
+    }, { passive:true });
+  }
+
+  /* ── A/B ──────────────────────────────────────────────────── */
+  var btnA = document.getElementById("btnA"), btnB = document.getElementById("btnB");
+  function setVariant(v){
+    variant = v;
+    localStorage.setItem("strokeVariant", v);
+    btnA.className = v === "A" ? "on" : "";
+    btnB.className = v === "B" ? "on" : "";
+    rebuild(); render();
+  }
+  btnA.onclick = function(){ setVariant("A"); };
+  btnB.onclick = function(){ setVariant("B"); };
+  window.addEventListener("keydown", function(e){
+    if (e.key === "a" || e.key === "A") setVariant("A");
+    if (e.key === "b" || e.key === "B") setVariant("B");
+  });
+  setVariant(variant);
+
+  window.__m = { L:function(){return L;}, path:path, pen:function(){return pen;},
+                 keys:keys, lens:lens, lookup:lookup, target:targetPen,
+                 marks:function(){ return { contactKey:contactKey, holdTo:holdTo,
+                                            devFrom:devFrom, devTo:devTo }; },
+                 setVariant:setVariant, render:render,
+                 set:function(p){ pen = p; render(); } };
+})();
+</script>
+</body>
+</html>

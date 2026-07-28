@@ -13,7 +13,6 @@ import {
   LANGUAGE_CARDS,
   POLAROIDS,
   TIMELINE,
-  EIGHTEEN_THINGS,
   AUDIO_TRACKS,
   LITTLE_THINGS,
   FOUR_WORDS,
@@ -56,14 +55,13 @@ function applyStaticText() {
   setHTML("heroHeadline",  HERO.headline.replace("\n", "<br>"));
   setText("heroPara",      HERO.body);
 
-  // Four words
-  setText("wordsEyebrow",  FOUR_WORDS_COPY.eyebrow);
+  // Four words — eyebrow and sub-line are optional; when they are
+  // empty the elements are removed so they leave no gap behind.
+  setOptional("wordsEyebrow", FOUR_WORDS_COPY.eyebrow);
   setHTML("wordsMainLine", FOUR_WORDS_COPY.mainLine.replace("\n", "<br>"));
-  setText("wordsSubLine",  FOUR_WORDS_COPY.subLine);
+  setOptional("wordsSubLine", FOUR_WORDS_COPY.subLine);
 
   // Final letter
-  setText("finalQuoteText",    FINAL_LETTER.pullQuote.replace(/\n/g, "\n"));
-  setHTML("finalQuoteTextEl",  FINAL_LETTER.pullQuote.replace(/\n/g, "<br>"));
   setText("finalAddressee",    FINAL_LETTER.addressee);
   setText("finalLetterBody",   FINAL_LETTER.body);
   setText("finalSigLine1",     FINAL_LETTER.signatureLine1);
@@ -75,6 +73,11 @@ function setText(id: string, val: string) {
 }
 function setHTML(id: string, val: string) {
   const e = el(id); if (e) e.innerHTML = val;
+}
+/** Sets text, or removes the element entirely when the copy is blank. */
+function setOptional(id: string, val: string) {
+  const e = el(id); if (!e) return;
+  if (val && val.trim()) e.textContent = val; else e.remove();
 }
 
 /* ══════════════════════════════════════════════════
@@ -256,28 +259,6 @@ function initTimelineLightbox() {
 }
 
 /* ══════════════════════════════════════════════════
-   5. RENDER ACCORDION (18 things)
-══════════════════════════════════════════════════ */
-function renderAccordion() {
-  const acc = el("accordionList");
-  if (!acc) return;
-  acc.innerHTML = "";
-
-  EIGHTEEN_THINGS.forEach((thing, i) => {
-    const num = String(i + 1).padStart(2, "0");
-    const item = make("div", "accordion-item reveal-up");
-    item.innerHTML = `
-      <button class="accordion-btn">
-        <span class="accordion-num">${num}</span>
-        <span class="accordion-title">${thing.title}</span>
-        <span class="accordion-icon">✦</span>
-      </button>
-      <div class="accordion-body"><p>${thing.body}</p></div>`;
-    acc.appendChild(item);
-  });
-}
-
-/* ══════════════════════════════════════════════════
    6. RENDER AUDIO CARDS
 ══════════════════════════════════════════════════ */
 function renderAudioCards() {
@@ -370,6 +351,11 @@ function transitionToMain() {
   if (!us || !main) return;
   us.classList.add("fade-out");
   setTimeout(() => {
+    // Drop the state class as well as adding `hidden`. `.hidden` alone
+    // loses the specificity contest with #unlock-screen.is-visible, and
+    // the dismissed overlay would stay in the layout and in the
+    // accessibility tree for the rest of the visit.
+    us.classList.remove("is-visible", "pre-visible", "fade-out");
     us.classList.add("hidden");
     main.classList.remove("hidden");
     main.classList.add("is-visible");
@@ -449,20 +435,6 @@ function initPolaroids() {
   el("lightboxBackdrop")?.addEventListener("click", close);
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !lb?.classList.contains("hidden")) close();
-  });
-}
-
-/* ══════════════════════════════════════════════════
-   ACCORDION
-══════════════════════════════════════════════════ */
-function initAccordion() {
-  el("accordionList")?.addEventListener("click", (e) => {
-    const btn  = (e.target as HTMLElement).closest<HTMLElement>(".accordion-btn");
-    const item = btn?.closest<HTMLElement>(".accordion-item");
-    if (!item) return;
-    const isOpen = item.classList.contains("is-open");
-    document.querySelectorAll(".accordion-item").forEach(i => i.classList.remove("is-open"));
-    if (!isOpen) item.classList.add("is-open");
   });
 }
 
@@ -970,7 +942,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTimeline();
   initTimelineMobile();
   initTimelineLightbox();
-  renderAccordion();
   renderAudioCards();
   renderLittleThings();
   renderFourWords();
@@ -986,7 +957,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3. Interactions
   initLangCarousel();
   initPolaroids();
-  initAccordion();
   initAudioPlayers();
   el("unlockBtn")?.addEventListener("click", transitionToMain);
   // BUG 4 FIX: boot achievement system

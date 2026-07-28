@@ -51,6 +51,11 @@ export const HERO = {
 //  LANGUAGE LETTERS (Section 4)
 // ─────────────────────────────────────────
 
+/**
+ * NOTE: the Dutch and Nepali messages use the informal register
+ * (Dutch je/jij, Nepali तिमी) because this is written friend-to-friend.
+ * Please have a native speaker read both before this is sent.
+ */
 export const LANGUAGE_CARDS = [
   {
     lang:    "English",
@@ -58,26 +63,15 @@ export const LANGUAGE_CARDS = [
     sign:    "— with all my love ✦",
   },
   {
-    lang:    "हिन्दी · Hindi",
-    message: `"जन्मदिन मुबारक हो, अवलाइन। अठारह साल की उम्र में तुम जो बन गई हो, वो बहुत कम लोग बन पाते हैं — खूबसूरत, दिलेर, और दिल को छू लेने वाली। यह सफर और भी सुनहरा हो।"`,
-    sign:    "— ढेर सारा प्यार के साथ ✦",
+    lang:    "Nederlands · Dutch",
+    message: `"Gefeliciteerd met je verjaardag, ${BIRTHDAY_NAME}. Achttien is de leeftijd waarop dromen geen fantasie meer zijn, maar jouw verhaal worden. Je bent schitterend, warm en volstrekt onvergetelijk. De wereld mag blij zijn met jou."`,
+    sign:    "— met al mijn liefde ✦",
   },
   {
-    lang:    "বাংলা · Bengali",
-    message: `"শুভ জন্মদিন, অ্যাভলাইন। তুমি যে মানুষটা হয়ে উঠেছ, সে মানুষটা এই পৃথিবীকে আরও সুন্দর করে দিয়েছে। আঠারোয় পা দিয়ে তুমি যে অধ্যায়ে প্রবেশ করছ, সেটা হোক তোমার সবচেয়ে উজ্জ্বল অধ্যায়।"`,
-    sign:    "— অনেক ভালোবাসায় ✦",
+    lang:    "नेपाली · Nepali",
+    message: `"जन्मदिनको धेरै धेरै शुभकामना, अवलाइन। अठार वर्षको उमेर त्यो हो जहाँ सपनाहरू कल्पना रहँदैनन्, तिम्रो कथा बन्न थाल्छन्। तिमी उज्यालो छौ, न्यानो छौ, र कहिल्यै बिर्सन नसकिने छौ। यो संसार तिमी भएकोमा भाग्यमानी छ।"`,
+    sign:    "— अशेष मायाका साथ ✦",
   },
-  {
-    lang:    "Deutsch · German",
-    message: `"Herzlichen Glückwunsch zum Geburtstag, Avline. Mit achtzehn Jahren beginnt das schönste Kapitel deines Lebens. Du bist strahlend, klug und einzigartig — möge dieses Jahr dir alles bringen, was du dir erträumst."`,
-    sign:    "— in Liebe und Bewunderung ✦",
-  },
-  // ── ADD MORE LANGUAGES BELOW ──────────────────────────────────────
-  // {
-  //   lang:    "Français · French",
-  //   message: `"Joyeux anniversaire, Avline. ..."`,
-  //   sign:    "— avec tout mon amour ✦",
-  // },
 ];
 
 // ─────────────────────────────────────────
@@ -208,86 +202,6 @@ export const TIMELINE = [
 ];
 
 // ─────────────────────────────────────────
-//  18 THINGS (Section 7)
-// ─────────────────────────────────────────
-
-export const EIGHTEEN_THINGS = [
-  {
-    title: "The way you love people",
-    body:  "You love with your whole chest. No halfway, no conditions. When you care about someone, they feel it in every single interaction. That kind of love is rare, and you give it so freely.",
-  },
-  {
-    title: "Your laugh",
-    body:  "It fills every room like sunlight through glass. It is entirely unself-conscious and entirely contagious. The world sounds better when you laugh in it.",
-  },
-  {
-    title: "How endlessly curious you are",
-    body:  "You want to understand everything — why things work, how people feel, what makes the world spin the way it does. That hunger for understanding makes you extraordinary to talk to.",
-  },
-  {
-    title: "Your creativity",
-    body:  "You see the world differently than most people. Where others see ordinary, you see beautiful. Where others see blank space, you see possibility. That is an extraordinary gift.",
-  },
-  {
-    title: "The passion you carry",
-    body:  "When you care about something, you care about it completely. You do not do things halfway. That intensity — that fire — it is one of the most beautiful things about you.",
-  },
-  {
-    title: "Your softness",
-    body:  "In a world that tries to harden people, you remain tender. You feel things deeply and you refuse to apologise for it. Softness is not weakness — it is extraordinary strength.",
-  },
-  {
-    title: "The way you make people feel seen",
-    body:  "You listen like someone's words actually matter to you. You look at people like they are worth looking at. That attention, that presence — it is the rarest and most generous gift.",
-  },
-  {
-    title: "Your taste in everything",
-    body:  "Music, food, art, words — you have an eye and ear for beauty. Your taste is distinctly yours and it is impossibly good. Being around you is like being around someone who makes everything more interesting.",
-  },
-  {
-    title: "How brave you are",
-    body:  "Not the fearless kind — the better kind. You feel the fear and move forward anyway. You try things that scare you. You speak up even when your voice shakes. That is real courage.",
-  },
-  {
-    title: "Your honesty",
-    body:  "You say what you mean and you mean what you say. You do not perform or pretend. There is something so refreshing and rare about a person who is genuinely, consistently real.",
-  },
-  {
-    title: "The way you carry sadness",
-    body:  "You do not pretend pain does not exist. You sit with it, you feel it, and then you find your way through. Watching you navigate hard things with such grace has taught me more than you know.",
-  },
-  {
-    title: "Your sense of humour",
-    body:  "You are genuinely funny — not in a performative way, but in the kind that sneaks up on you and makes you laugh before you can stop yourself. Wit like yours is a gift to everyone around you.",
-  },
-  {
-    title: "The dreams you carry",
-    body:  "Your dreams are big and they are entirely your own. You know what you want, and you move toward it with this quiet, certain energy. The world does not know yet what is coming. I do.",
-  },
-  {
-    title: "Your loyalty",
-    body:  "You do not abandon people when things get hard. You stay. You show up. The people lucky enough to be loved by you know what it means to have someone truly in their corner.",
-  },
-  {
-    title: "Your quiet strength",
-    body:  "You do not announce it, but it is always there — the steady way you hold yourself together when things get heavy, and hold other people together too. People lean on you without even realising why.",
-  },
-  {
-    title: "The way you notice things",
-    body:  "The small details no one else catches — a shift in someone's mood, a line in a song, the exact colour of an evening sky. You pay attention to the world like it deserves to be seen. It does, and so do you.",
-  },
-  {
-    title: "That you are entirely yourself",
-    body:  "In a world full of people performing versions of themselves, you have never once pretended to be anyone else. You are unmistakably, unapologetically you — and there is nobody else like you anywhere.",
-  },
-  {
-    title: "Who you are becoming",
-    body:  "The most exciting thing about you is not even who you are right now — it is who you are still becoming. Every version of you has been extraordinary. I cannot wait to witness all the ones still to come.",
-  },
-  // ── YOU CAN EDIT ANY OF THESE, OR ADD MORE ───────────────────────
-];
-
-// ─────────────────────────────────────────
 //  VOICE NOTES / AUDIO (Section 8)
 // ─────────────────────────────────────────
 
@@ -295,6 +209,7 @@ export const EIGHTEEN_THINGS = [
  * Set `src` to your audio file path, e.g. "/audio/message1.mp3"
  * Leave `src` blank ("") and it will show a friendly "add audio file" message.
  */
+/** Two, deliberately. They sit as one balanced row. */
 export const AUDIO_TRACKS = [
   {
     title:    "A Message Just For You",
@@ -308,13 +223,6 @@ export const AUDIO_TRACKS = [
     src:      "",   // ← e.g. "/audio/memory.mp3"
     color:    "#b89de0",
   },
-  {
-    title:    `Happy Birthday, ${BIRTHDAY_NAME}`,
-    subtitle: "Eighteen wishes, spoken softly",
-    src:      "",   // ← e.g. "/audio/birthday.mp3"
-    color:    "#d4c5e8",
-  },
-  // ── ADD MORE TRACKS BY COPYING A BLOCK ABOVE ─────────────────────
 ];
 
 // ─────────────────────────────────────────
@@ -335,13 +243,17 @@ export const LITTLE_THINGS = [
 //  FOUR WORDS (Section 10)
 // ─────────────────────────────────────────
 
-/** Exactly these 4 words will animate in one by one on scroll. */
-export const FOUR_WORDS = ["Kind", "Brilliant", "Beautiful", "Unforgettable"];
+/**
+ * Her words, not mine. She chose these when asked to describe herself.
+ * They animate in one by one on scroll.
+ */
+export const FOUR_WORDS = ["Understanding", "Curious", "Thoughtful", "Wise"];
 
 export const FOUR_WORDS_COPY = {
-  eyebrow:   "If I had to choose",
-  mainLine:  "If I had only four words to describe you,\nthese would never be enough.",
-  subLine:   "No language has ever been built for what you are.",
+  /** Left empty on purpose — this section speaks more quietly than the rest. */
+  eyebrow:   "",
+  mainLine:  "When I asked you to describe yourself,\nthis is what you said.",
+  subLine:   "",
 };
 
 // ─────────────────────────────────────────
@@ -349,8 +261,6 @@ export const FOUR_WORDS_COPY = {
 // ─────────────────────────────────────────
 
 export const FINAL_LETTER = {
-  pullQuote: `"She is made of wildflower and starlight,\nof monsoon and melody —\nof every beautiful thing\nthe world has ever held."`,
-
   /** The "For [name], on her Nth birthday" line */
   addressee: `For ${BIRTHDAY_NAME}, on her ${BIRTHDAY_AGE}th birthday —`,
 

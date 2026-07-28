@@ -44,6 +44,9 @@ body {
 }
 
 /* hidden util */
+/* Note: `.hidden` is deliberately weaker than the id-scoped state rules
+   near the end of this file, so anything that hides a screen must also
+   remove its `is-visible` class (see transitionToMain). */
 .hidden { display: none !important; }
 
 /* ── TYPOGRAPHY SCALE ── */
@@ -1313,7 +1316,17 @@ button, [role="button"], .polaroid, .accordion-btn,
 
 /* Minimum 44px touch target on small controls */
 .carousel-btn { min-width: 44px; min-height: 44px; }
-.lang-dot     { width: 12px; height: 12px; padding: 8px; box-sizing: content-box; }
+/* The dot stays 12px; the tappable area is an invisible 44px square
+   centred on it, so the hit target grows without moving anything.
+   (The previous 8px padding only reached 28px total.) */
+.lang-dot     { width: 12px; height: 12px; padding: 0; position: relative; }
+.lang-dot::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 44px; height: 44px;
+  transform: translate(-50%, -50%);
+}
 .audio-play-btn { width: 44px; height: 44px; }
 .accordion-btn  { min-height: 52px; }
 
@@ -1345,9 +1358,10 @@ button, [role="button"], .polaroid, .accordion-btn,
   .unlock-flower { width: 80px; }
 
   /* ── Hero ── */
-  /* Float flowers overlap text on mobile — hide them */
-  .hero-peony  { width: 70px; height: 70px; top: 8px; right: 8px; }
-  .hero-gerbera { width: 55px; height: 55px; bottom: 8px; left: 8px; }
+  /* The hero paragraph runs the full width on small screens, so these
+     two collide with its last line. Hidden, as the note always said. */
+  .hero-peony,
+  .hero-gerbera { display: none; }
 
   /* ── Language carousel ── */
   /* Arrow buttons are now properly outside the clip track, but on mobile
@@ -1437,6 +1451,10 @@ button, [role="button"], .polaroid, .accordion-btn,
 
   /* ── Unlock ── */
   .unlock-flower { width: 50px; opacity: 0.55; }
+
+  /* The card corner glyph runs into the longer values once the cards
+     are this narrow. It is pure decoration — drop it. */
+  .thing-floral { display: none; }
 
   /* ── Polaroids ── */
   .polaroid      { width: clamp(145px, 42vw, 185px); }
