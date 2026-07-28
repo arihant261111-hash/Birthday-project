@@ -325,7 +325,6 @@
         <div class="section-inner reveal-up">
           <p  class="eyebrow"      >In My Voice</p>
           <h2 class="section-title">Things I Could Only Say Out Loud</h2>
-          <p  class="section-sub"  >Add your .mp3 files to the <code style="font-family:monospace;font-size:0.8em;color:var(--purple-light)">/public/audio/</code> folder and set the src in config.ts</p>
           <div class="audio-cards" id="audioCards"></div>
         </div>
       </section>
@@ -345,11 +344,13 @@
       <section id="four-words" class="section section--words">
         <div class="words-container">
           <p class="words-eyebrow reveal-up" id="wordsEyebrow"></p>
-          <div id="fourWordsWrap"></div>
-          <div class="words-conclusion reveal-up">
+          <!-- The question comes first: it frames the four words as
+               her answer, rather than explaining them afterwards. -->
+          <div class="words-intro reveal-up">
             <p class="words-main-line" id="wordsMainLine"></p>
             <p class="words-sub-line"  id="wordsSubLine"></p>
           </div>
+          <div id="fourWordsWrap"></div>
         </div>
       </section>
 

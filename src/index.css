@@ -1089,19 +1089,28 @@ h1, h2, h3, .unlock-headline, .hero-headline,
 .word-reveal--3 .big-word.is-visible { transition-delay: 0.8s; }
 .word-reveal--4 .big-word.is-visible { transition-delay: 1.2s; }
 
-.words-conclusion {
-  margin-top: 3rem;
-  padding-top: 2.5rem;
-  border-top: 1px solid rgba(123,94,167,0.2);
+/* The question sits above the words now, so the rule that used to
+   separate them belongs underneath it. */
+.words-intro {
+  margin-bottom: 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(123,94,167,0.2);
 }
 .words-main-line {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(1.2rem, 3vw, 1.9rem);
   font-style: italic;
-  color: var(--cream);
+  color: var(--lavender);
   font-weight: 400;
   line-height: 1.5;
   margin-bottom: 0.8rem;
+}
+/* Both lines share the one face; the second is a touch larger so the
+   answer lands slightly heavier than the question. */
+.words-line { display: block; }
+.words-line--2 {
+  font-size: 1.24em;
+  margin-top: 0.35em;
 }
 .words-sub-line {
   font-size: clamp(0.85rem, 1.8vw, 1rem);

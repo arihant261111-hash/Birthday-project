@@ -58,7 +58,10 @@ function applyStaticText() {
   // Four words — eyebrow and sub-line are optional; when they are
   // empty the elements are removed so they leave no gap behind.
   setOptional("wordsEyebrow", FOUR_WORDS_COPY.eyebrow);
-  setHTML("wordsMainLine", FOUR_WORDS_COPY.mainLine.replace("\n", "<br>"));
+  // each line gets its own element so the second can be sized apart
+  setHTML("wordsMainLine", FOUR_WORDS_COPY.mainLine.split("\n")
+    .map((line, i) => `<span class="words-line words-line--${i + 1}">${line}</span>`)
+    .join(""));
   setOptional("wordsSubLine", FOUR_WORDS_COPY.subLine);
 
   // Final letter
