@@ -1068,7 +1068,12 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   color: transparent;
   -webkit-text-stroke: 1px rgba(212,197,232,0.2);
   letter-spacing: 0.05em;
-  transition: all 0.6s ease;
+  /* Named properties, not `all`. `all` included font-size, so fitting
+     a long word to the container animated the type over 0.6s — a
+     layout property, reflowing every frame — instead of simply
+     setting it. */
+  transition: opacity 0.6s ease, transform 0.6s ease,
+              color 0.6s ease, -webkit-text-stroke-color 0.6s ease;
   transform: translateY(100%);
   opacity: 0;
 }

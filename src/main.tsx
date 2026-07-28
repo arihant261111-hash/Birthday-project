@@ -502,6 +502,46 @@ function renderFourWords() {
     div.appendChild(span);
     wrap.appendChild(div);
   });
+
+  fitFourWords();
+  window.addEventListener("resize", fitFourWords);
+  // The webfont arrives after first paint and is wider than the
+  // fallback serif, so a word that fitted while measuring can overflow
+  // once Cormorant swaps in. Measure again when the fonts settle.
+  document.fonts?.ready.then(() => fitFourWords());
+}
+
+/**
+ * A long word cannot wrap — it has no break opportunity — so at the
+ * CSS size "Understanding" runs past the container and .word-reveal's
+ * overflow:hidden slices the end off it. Rather than pick a font size
+ * small enough for the longest word anyone might ever write here,
+ * measure the words and step the size down only when it is needed.
+ * All four share one size, so they still read as a set.
+ */
+function fitFourWords() {
+  const wrap = el("fourWordsWrap");
+  if (!wrap) return;
+  const words = Array.from(wrap.querySelectorAll<HTMLElement>(".big-word"));
+  if (!words.length) return;
+
+  // measure at the size the stylesheet intends
+  words.forEach(w => { w.style.fontSize = ""; });
+  const base = parseFloat(getComputedStyle(words[0]).fontSize) || 0;
+  if (!base) return;
+
+  const avail = wrap.clientWidth;
+  if (!avail) return;
+
+  let widest = 0;
+  for (const w of words) {
+    // scrollWidth reports the full text width even while it overflows
+    if (w.scrollWidth > widest) widest = w.scrollWidth;
+  }
+  if (widest <= avail) return;          // nothing to do
+
+  const fitted = Math.floor(base * (avail / widest) * 0.98);
+  words.forEach(w => { w.style.fontSize = `${fitted}px`; });
 }
 
 /* ══════════════════════════════════════════════════
@@ -532,8 +572,18 @@ function transitionToMain() {
     setFinalDate();
     initScrollReveal();
     initFourWords();
-    // Only now does #main-content have a size, so the memory section
-    // can measure its own photographs and build the path.
+    // Only now does #main-content have a size. Anything that measures
+    // itself has to wait until here — at boot these are all zero.
+    //
+    // The words are fitted three times on purpose. A display:none
+    // element does not trigger a font load, so document.fonts.ready
+    // can resolve before Cormorant is ever requested for them; the
+    // words then get wider the moment they become visible. Measuring
+    // now, again when the fonts settle, and once more shortly after
+    // covers every order those can happen in.
+    fitFourWords();
+    document.fonts?.ready.then(() => fitFourWords());
+    setTimeout(fitFourWords, 300);
     renderMemory();
     // Start listening for scroll-to-bottom AFTER main is revealed
     initHiddenLetter();
