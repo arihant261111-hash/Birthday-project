@@ -1626,14 +1626,18 @@ button, [role="button"], .polaroid, .accordion-btn,
     inset 0 -2px 6px rgba(24,15,7,0.4);
 }
 
+/* The two folded panels are real elements clipped to triangles, not
+   the zero-size/transparent-border trick. That technique was the one
+   thing the two misrendering faces had in common — every other part
+   of this envelope painted its declared colour correctly — and a
+   clipped background is unambiguous about what colour it is. */
 .lo-env-bottom {
   position: absolute;
   bottom: 0; left: 0;
-  width: 0; height: 0;
-  border-left: 150px solid transparent;
-  border-right: 150px solid transparent;
-  /* the front panel, folded up: sits between the body's mid and dark */
-  border-bottom: 100px solid #221a13;
+  width: 100%; height: 100px;
+  /* the front panel, folded up */
+  background: #271c12;
+  clip-path: polygon(0 100%, 100% 100%, 50% 0);
   z-index: 1;
 }
 
@@ -1679,12 +1683,11 @@ button, [role="button"], .polaroid, .accordion-btn,
 .lo-flap {
   position: absolute;
   top: 0; left: 0;
-  width: 0; height: 0;
-  border-left: 150px solid transparent;
-  border-right: 150px solid transparent;
+  width: 100%; height: 100px;
   /* the flap, folded down over the front: the same paper, a shade
-     lighter than the panel beneath it and no lighter than the body */
-  border-top: 100px solid #262019;
+     lighter than the panel beneath it */
+  background: #2d2115;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
   transform-origin: top center;
   transition: transform 1.1s cubic-bezier(0.5,0,0.3,1);
   z-index: 7;
@@ -1856,11 +1859,11 @@ button, [role="button"], .polaroid, .accordion-btn,
 /* ── Mobile ── */
 @media (max-width: 640px) {
   .lo-envelope { width: 260px; height: 174px; }
-  .lo-env-bottom { border-left-width: 130px; border-right-width: 130px; border-bottom-width: 87px; }
+  .lo-env-bottom { height: 87px; }
   .lo-env-seam { width: 137px; height: 90px; }
   .lo-env-seam--left { transform: skewX(-56.3deg); }
   .lo-env-seam--right { transform: skewX(56.3deg); }
-  .lo-flap { border-left-width: 130px; border-right-width: 130px; border-top-width: 87px; }
+  .lo-flap { height: 87px; }
   .lo-flap-shadow { height: 83px; }
   .lo-wax { top: 62px; }
   .lo-paper { padding: 32px 22px 30px; }
