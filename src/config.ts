@@ -302,8 +302,6 @@ So...
 Go on.
 Open it.`,
 
-  signatureLine1: "With all my love,",
-  signatureLine2: "— Ari ✦",  // ← change to your name
 };
 /* ══════════════════════════════════════════════════
    HIDDEN LETTER — the final experience

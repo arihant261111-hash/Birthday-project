@@ -68,8 +68,6 @@ function applyStaticText() {
   // Final letter
   setText("finalAddressee",    FINAL_LETTER.addressee);
   setText("finalLetterBody",   FINAL_LETTER.body);
-  setText("finalSigLine1",     FINAL_LETTER.signatureLine1);
-  setText("finalSigLine2",     FINAL_LETTER.signatureLine2);
 }
 
 function setText(id: string, val: string) {
