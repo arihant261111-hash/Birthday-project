@@ -168,19 +168,13 @@ export const MEMORY = {
  * Set `src` to your audio file path, e.g. "/audio/message1.mp3"
  * Leave `src` blank ("") and it will show a friendly "add audio file" message.
  */
-/** Two, deliberately. They sit as one balanced row. */
+/** One. It is a birthday song; a second card would only dilute it. */
 export const AUDIO_TRACKS = [
   {
-    title:    "A Message Just For You",
-    subtitle: "Something I have wanted to say for a long time",
-    src:      "",   // ← e.g. "/audio/message1.mp3"
+    title:    "Happy Birthday, Avline",
+    subtitle: "I'm not a singer either. Sorry in advance.",
+    src:      "/audio/1.mp4",   // audio-only MP4 (AAC), 46s, 0.7 MB
     color:    "#7b5ea7",
-  },
-  {
-    title:    "Our Favourite Memory",
-    subtitle: "The one I keep returning to when I think of you",
-    src:      "",   // ← e.g. "/audio/memory.mp3"
-    color:    "#b89de0",
   },
 ];
 

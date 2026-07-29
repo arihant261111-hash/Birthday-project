@@ -866,11 +866,13 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   background: transparent;
 }
 
+/* Sized for one card. auto-fit would stretch a single track across
+   the full 900px, which reads as a banner rather than a recording. */
 .audio-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
-  max-width: 900px;
+  max-width: 480px;
   margin: 2.5rem auto 0;
   justify-content: center;
 }
