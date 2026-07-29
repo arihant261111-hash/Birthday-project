@@ -217,16 +217,90 @@ export const FINAL_LETTER = {
   /** The "For [name], on her Nth birthday" line */
   addressee: `For ${BIRTHDAY_NAME}, on her ${BIRTHDAY_AGE}th birthday —`,
 
-  /** The body of the letter — use \n\n for new paragraphs */
-  body: `There are not enough pages in any book I have ever read to contain everything I want to say to you on this day. So I will say only this: you are one of the most extraordinary people I have ever had the privilege of knowing. Watching you grow has been the most beautiful thing.
+  /**
+   * Ari's words. The element is white-space: pre-wrap, so every line
+   * break here is a real one on screen. Do not reflow this.
+   */
+  body: `Well,
+You finally made it to the end of this website.
+I really hope at least some of the things I made managed to make you smile and actually made you happy on your birthday.
+Because you've told me before that you don't really feel happy on your birthdays anymore.
+So...
+I hope I managed to change that, even if it was just for today.
 
-At eighteen, you stand at the beginning of everything. Every dream you have ever whispered to yourself in the dark — this is when they start coming true. The world does not know yet what is coming. But I do.
+You're 18 now.
+And I really hope your dreams slowly start becoming reality instead of just staying dreams.
+I genuinely pray that they do.
+Seeing you succeed is also a part of my dream.
 
-You are going to do things that take your own breath away. You are going to love and be loved in ways that feel like something out of books. You are going to become, over and over again, more yourself than you have ever been.
+I know you were probably planning on moving out sometime this year.
+Sadly, because of everything that's happened and other stuff  you can't right now.
+But that's okay.
+There's still time.
+There's no need to rush.
 
-On this day, I want you to know: you are already enough. You have always been enough. Every single version of you — even the uncertain, even the aching, even the in-between — has been exactly enough.
+Before you go...
+There are just a few more things I want to say.
 
-Happy birthday, ${BIRTHDAY_NAME}. Thank you for existing.`,
+I want you to know that you are enough.
+You always have been.
+You're human, Of course you're going to doubt yourself sometimes but at the end of the day,
+You're you yk?
+
+And for who you are, You are more than enough.
+You make people smile, No matter what your family says.
+You really are one of the kindest people I've ever met.
+The stress from work, school, family
+That feeling of being helpless...
+Yeah ik sucks, it really fucking sucks
+I know.
+But,
+It's your birthday today.
+So let's forget about all of that, even if it's just for one day.
+Deal?
+
+It's honestly funny thinking about everything.
+Last year, I had literally forgotten your name,
+Now I've probably written "Avline" over a hundred times because of all the testing I had to do for this website.
+Trust me...
+It had me crashing out. 😭
+
+At the beginning,
+You didn't really want to talk to me.
+You were pretty avoidant.
+Which is completely fair.
+I was really annoying back then.
+(still am, honestly. 😭)
+But then,
+You slowly started warming up to me.
+Then came Among Us.
+Then chess.
+Then all those all nighters on calls that lasted seven hours.
+Those were something else, the talks we had.
+( The depe talks and gossips ! )
+
+Then came that ragebait game-
+Ong,, it was pure chaos... The crashing out.
+We spent 44 fucking minutes trying to beat
+one level.
+ONE !!!! 😭
+Honestly...
+I still think that's one of my favourite memories.
+We were absolutely crashing out.
+
+And somehow...
+
+From me forgetting your name last year...
+To us talking every single day now...
+Here we are, and also !!!
+
+You still owe me a party, by the way.
+Don't think I've forgotten that. 😹
+Anyways-
+There's one last gift I've prepared for you.
+So...
+Go on.
+Open it.`,
 
   signatureLine1: "With all my love,",
   signatureLine2: "— Ari ✦",  // ← change to your name
