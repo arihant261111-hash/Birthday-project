@@ -193,7 +193,7 @@ export const LITTLE_THINGS = [
   { icon: "🍜", label: "Favourite Food",    value: "Momos & Ramen" },
   { icon: "🎨", label: "Favourite Colour",  value: "Deep Purple" },
   { icon: "💫", label: "Favourite Memory",  value: "The day everything changed for the better" },
-  { icon: "🎵", label: "Favourite Song",    value: "Something that sounds like her" },
+  { icon: "🎵", label: "Favourite Artist",  value: "Something that sounds like her" },
   { icon: "🌙", label: "Favourite Place",   value: "Wherever she feels most free" },
   // ── ADD / REMOVE / REORDER CARDS FREELY ──────────────────────────
 ];
