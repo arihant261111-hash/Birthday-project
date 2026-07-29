@@ -189,7 +189,7 @@ export const AUDIO_TRACKS = [
 // ─────────────────────────────────────────
 
 export const LITTLE_THINGS = [
-  { icon: "🌸", label: "Favourite Flower",  value: "Gerbera Daisies" },
+  { icon: "🌸", label: "Flower you like",   value: "Gerbera, Peonies" },
   { icon: "🍜", label: "Favourite Food",    value: "Momos & Ramen" },
   { icon: "🎨", label: "Favourite Colour",  value: "Purple" },
   { icon: "💫", label: "Favourite Memory",  value: "The Ragebait game" },
