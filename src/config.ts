@@ -58,14 +58,14 @@ export const HERO = {
  */
 export const LANGUAGE_CARDS = [
   {
-    lang:    "English",
-    message: `"Happy Birthday, ${BIRTHDAY_NAME}. Eighteen is the age where dreams stop being fantasies and start becoming your story. You are brilliant, radiant, and entirely unforgettable. The world is lucky to have you in it."`,
-    sign:    "— with all my love ✦",
-  },
-  {
     lang:    "Nederlands · Dutch",
     message: `"Gefeliciteerd met je verjaardag, ${BIRTHDAY_NAME}. Achttien is de leeftijd waarop dromen geen fantasie meer zijn, maar jouw verhaal worden. Je bent schitterend, warm en volstrekt onvergetelijk. De wereld mag blij zijn met jou."`,
     sign:    "— met al mijn liefde ✦",
+  },
+  {
+    lang:    "English",
+    message: `"Happy Birthday, ${BIRTHDAY_NAME}. Eighteen is the age where dreams stop being fantasies and start becoming your story. You are brilliant, radiant, and entirely unforgettable. The world is lucky to have you in it."`,
+    sign:    "— with all my love ✦",
   },
   {
     lang:    "नेपाली · Nepali",
