@@ -29,6 +29,9 @@ body {
   line-height: 1.7;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  /* iOS inflates text on rotation unless told not to */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* scrollbar */
@@ -711,7 +714,12 @@ h1, h2, h3, .unlock-headline, .hero-headline,
    ═══════════════════════════════════════════════════════════════ */
 .section--memory {
   position: relative;
+  /* svh, not vh. On iOS the URL bar collapses as you scroll, which
+     changes vh mid-gesture — this section would have resized itself
+     underneath the ink. svh is the small-viewport height and stays
+     put. vh first as the fallback for anything older. */
   height: 320vh;
+  height: 320svh;
   padding: 0;
   background: transparent;
   overflow: visible;
@@ -1051,6 +1059,7 @@ h1, h2, h3, .unlock-headline, .hero-headline,
 .section--words {
   background: radial-gradient(ellipse 120% 80% at 50% 50%, rgba(26,18,70,0.55) 0%, transparent 100%);
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 8vw, 6rem);

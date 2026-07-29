@@ -213,7 +213,9 @@ function renderMemory() {
   });
 
   memBuild();
-  window.addEventListener("resize", memBuild);
+  memLastW = window.innerWidth;
+  memLastH = window.innerHeight;
+  window.addEventListener("resize", memOnResize);
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     memPath.style.strokeDasharray = "none";
@@ -235,6 +237,29 @@ function renderMemory() {
     const y = window.scrollY;
     if (y + memVh > memTop - memVh && y < memTop + memH + memVh) memStart();
   }, { passive: true });
+}
+
+let memLastW = 0, memLastH = 0;
+
+/**
+ * iOS fires resize every time the URL bar collapses or expands while
+ * you scroll. Rebuilding the path on those would re-cut the geometry
+ * mid-gesture and jump the ink. Only a width change or a real height
+ * change — a rotation, not browser chrome — earns a rebuild; anything
+ * smaller just refreshes the measurements the scroll maths needs.
+ */
+function memOnResize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  const structural = w !== memLastW || Math.abs(h - memLastH) > 120;
+  memLastW = w; memLastH = h;
+
+  if (structural) { memBuild(); return; }
+
+  const section = el("memory");
+  if (!section || !section.offsetHeight) return;
+  memTop = section.getBoundingClientRect().top + window.scrollY;
+  memH   = section.offsetHeight;
+  memVh  = h;
 }
 
 /** Catmull-Rom through the waypoints; shape comes from the points
