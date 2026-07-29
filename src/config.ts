@@ -265,7 +265,7 @@ export const HIDDEN_LETTER = {
    * Ari's own words, and the letter should not be introduced by
    * anyone else's.
    */
-  openingLines: [] as string[],
+  openingLines: ["Dear Avline,"],
 
   // ── ARI'S WORDS. Do not edit these but for typos. ────────────────
   // Each string is one line, revealed about 1.15s after the last.

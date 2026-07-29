@@ -1150,12 +1150,33 @@ function initHiddenLetter() {
     // Starts at textStart (21s) — paper has settled for 3s
     T(() => {
       const lines = linesContainer.querySelectorAll<HTMLElement>(".lo-line");
+
+      // Hidden lines are opacity:0, not display:none, so the paper is
+      // already at its full height before a single word is visible.
+      // Scrolling to scrollHeight therefore jumped to the end of the
+      // letter immediately and pinned there. Follow the newest line
+      // instead — and stop following the moment she scrolls herself,
+      // so she can always go back and re-read.
+      let lastAuto = -1;
+      let readerTookOver = false;
+
       lines.forEach((line, i) => {
         timers.push(setTimeout(() => {
           line.classList.add("lo-show");
-          // auto-scroll paper gently as new lines appear
+
           const paper = document.getElementById("lo-paper");
-          if (paper) paper.scrollTop = paper.scrollHeight;
+          if (!paper) return;
+          if (lastAuto >= 0 && Math.abs(paper.scrollTop - lastAuto) > 8) {
+            readerTookOver = true;
+          }
+          if (readerTookOver) return;
+
+          // keep the newest line a little above the halfway mark
+          const target = Math.max(0, line.offsetTop - paper.clientHeight * 0.55);
+          if (target > paper.scrollTop) {
+            paper.scrollTop = target;
+            lastAuto = paper.scrollTop;
+          }
         }, i * LETTER_T.lineInterval));
       });
     }, LETTER_T.textStart);
