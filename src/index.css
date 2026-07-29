@@ -1208,6 +1208,67 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--purple) 30%, var(--lavender) 50%, var(--purple) 70%, transparent);
 }
+/* the same rule mirrored along the bottom edge, so the card is
+   bounded rather than just capped */
+.final-letter-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--purple) 30%, var(--lavender) 50%, var(--purple) 70%, transparent);
+  opacity: 0.7;
+}
+
+/* ── Letterhead ornament ──────────────────────────────────────────
+   Paper grain, an inner rule and four corner flourishes. All of it
+   is inert and sits beneath the text. */
+.final-paper-grain,
+.final-inner-rule,
+.final-corner {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* the same fibre texture the hidden letter's paper uses, at a
+   fraction of the strength — it quietly rhymes with what is coming */
+.final-paper-grain {
+  inset: 0;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/></filter><rect width='140' height='140' filter='url(%23g)'/></svg>");
+}
+
+.final-inner-rule {
+  inset: clamp(12px, 1.6vw, 20px);
+  border: 1px solid rgba(123,94,167,0.22);
+  border-radius: 2px;
+}
+
+.final-corner {
+  width: clamp(30px, 4vw, 46px);
+  height: clamp(30px, 4vw, 46px);
+}
+.final-corner svg { width: 100%; height: 100%; display: block; }
+.final-corner--tl { top: 10px;    left: 10px;  }
+.final-corner--tr { top: 10px;    right: 10px; transform: scaleX(-1); }
+.final-corner--bl { bottom: 10px; left: 10px;  transform: scaleY(-1); }
+.final-corner--br { bottom: 10px; right: 10px; transform: scale(-1); }
+
+/* the flower above the addressee */
+.final-seal {
+  width: clamp(46px, 7vw, 68px);
+  margin: 0 auto 1.1rem;
+  filter: drop-shadow(0 0 16px rgba(123,94,167,0.45));
+}
+.final-seal svg { width: 100%; height: 100%; display: block; }
+
+/* the letter itself sits above every ornament */
+.final-letter-header,
+.final-letter-body,
+.final-letter-footer {
+  position: relative;
+  z-index: 1;
+}
 
 .final-letter-header {
   text-align: center;

@@ -1,20 +1,6 @@
 /**
- * ════════════════════════════════════════════════════════════════
- *   AVLINE'S BIRTHDAY WEBSITE — ALL YOUR EDITABLE CONTENT
- * ════════════════════════════════════════════════════════════════
- *
- *  This is the ONLY file you need to edit to personalise the site.
- *  Everything here is referenced by the rest of the app.
- *
- *  HOW TO EDIT PHOTOS:
- *   1. Drop your image files into /public/photos/ (create the folder).
- *   2. Reference them as "/photos/your-file.jpg" in the polaroids + timeline arrays.
- *
- *  HOW TO EDIT AUDIO:
- *   1. Drop your .mp3 / .m4a files into /public/audio/ (create the folder).
- *   2. Set the `src` field to "/audio/your-file.mp3".
- *
- *  ALL OTHER TEXT — just edit the strings directly.
+ * For Avline, on her eighteenth birthday.
+ * All of the site's content lives here.
  */
 
 // ─────────────────────────────────────────
@@ -78,14 +64,9 @@ export const LANGUAGE_CARDS = [
 //  POLAROID MEMORY WALL (Section 5)
 // ─────────────────────────────────────────
 
-/**
- * For REAL photos: set `photo: "/photos/your-file.jpg"` and remove `emoji` / `bg`.
- * For placeholder gradients: leave `photo` blank and keep `emoji` + `bg`.
- * `tilt` is rotation in degrees (positive = clockwise, negative = counter-clockwise).
- */
 export const POLAROIDS = [
   {
-    photo:   "/photos/polaroid-1.jpg",                // set to "/photos/photo1.jpg" to use a real image
+    photo:   "/photos/polaroid-1.jpg",
     emoji:   "🌸",
     bg:      "linear-gradient(135deg,#7b5ea7,#3d2a6e)",
     caption: "Mouse jasto cha ta hwww 😹",
@@ -126,27 +107,12 @@ export const POLAROIDS = [
     caption: "Not even gonna pretend I know what's going on... ",
     tilt:    7,
   },
-  // ── Six, so they fill two rows of three exactly. Adding a
-  //    seventh will leave one stranded on a row of its own. ────────
 ];
 
-// ─────────────────────────────────────────
 // ─────────────────────────────────────────
 //  THE MEMORY — 2008 → 2026 (Section 6)
 // ─────────────────────────────────────────
 
-/**
- * Two photographs and one line of ink between them. That is the whole
- * section; there is nothing else in it, on purpose.
- *
- * Drop the files into /public/photos/ and reference them as
- * "/photos/your-file.jpg". Leave `src` empty and a quiet placeholder
- * card shows instead, so the section still works before the real
- * pictures arrive.
- *
- * Portrait images suit the frames best — they are cropped to 4:5 and
- * centred. The years appear exactly as written here.
- */
 export const MEMORY = {
   start: {
     year: "2008",
@@ -164,16 +130,11 @@ export const MEMORY = {
 //  VOICE NOTES / AUDIO (Section 8)
 // ─────────────────────────────────────────
 
-/**
- * Set `src` to your audio file path, e.g. "/audio/message1.mp3"
- * Leave `src` blank ("") and it will show a friendly "add audio file" message.
- */
-/** One. It is a birthday song; a second card would only dilute it. */
 export const AUDIO_TRACKS = [
   {
     title:    "Happy Birthday, Avline",
     subtitle: "I'm not a singer either. Sorry in advance.",
-    src:      "/audio/1.mp4",   // audio-only MP4 (AAC), 46s, 0.7 MB
+    src:      "/audio/1.mp4",
     color:    "#7b5ea7",
   },
 ];
@@ -189,7 +150,6 @@ export const LITTLE_THINGS = [
   { icon: "💫", label: "Favourite Memory",  value: "The Ragebait game" },
   { icon: "🎵", label: "Favourite Artist",  value: "Tribal Rain" },
   { icon: "🌙", label: "Favourite Place",   value: "The Bed" },
-  // ── ADD / REMOVE / REORDER CARDS FREELY ──────────────────────────
 ];
 
 // ─────────────────────────────────────────
@@ -214,7 +174,6 @@ export const FOUR_WORDS_COPY = {
 // ─────────────────────────────────────────
 
 export const FINAL_LETTER = {
-  /** The "For [name], on her Nth birthday" line */
   addressee: `For ${BIRTHDAY_NAME}, on her ${BIRTHDAY_AGE}th birthday —`,
 
   /**
