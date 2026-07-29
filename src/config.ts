@@ -234,7 +234,7 @@ I genuinely pray that they do.
 Seeing you succeed is also a part of my dream.
 
 I know you were probably planning on moving out sometime this year.
-Sadly, because of everything that's happened and other stuff  you can't right now.
+Sadly, because of everything that's happened and other stuff you can't right now.
 But that's okay.
 There's still time.
 There's no need to rush.
@@ -252,7 +252,7 @@ You make people smile, No matter what your family says.
 You really are one of the kindest people I've ever met.
 The stress from work, school, family
 That feeling of being helpless...
-Yeah ik sucks, it really fucking sucks
+Yeah ik it sucks, it really fucking sucks
 I know.
 But,
 It's your birthday today.
@@ -277,7 +277,7 @@ Then came Among Us.
 Then chess.
 Then all those all nighters on calls that lasted seven hours.
 Those were something else, the talks we had.
-( The depe talks and gossips ! )
+( The deep talks and gossips ! )
 
 Then came that ragebait game-
 Ong,, it was pure chaos... The crashing out.
