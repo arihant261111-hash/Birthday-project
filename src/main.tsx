@@ -101,7 +101,7 @@ function renderLanguageCards() {
         <p class="lang-label">${card.lang}</p>
         <div class="lang-deco">✦ ❀ ✦</div>
         <p class="lang-message">${card.message}</p>
-        <p class="lang-sign">${card.sign}</p>
+        ${card.sign ? `<p class="lang-sign">${card.sign}</p>` : ""}
       </div>`;
     carousel.appendChild(div);
 

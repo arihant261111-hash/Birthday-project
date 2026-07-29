@@ -59,18 +59,18 @@ export const HERO = {
 export const LANGUAGE_CARDS = [
   {
     lang:    "Nederlands · Dutch",
-    message: `"Gefeliciteerd met je verjaardag, ${BIRTHDAY_NAME}. Achttien is de leeftijd waarop dromen geen fantasie meer zijn, maar jouw verhaal worden. Je bent schitterend, warm en volstrekt onvergetelijk. De wereld mag blij zijn met jou."`,
-    sign:    "— met al mijn liefde ✦",
+    message: `Oké, eerst... Ik heb Google Translate gebruikt. Ik spreek geen Nederlands. Maar ik dacht: jij woont in België, dus misschien moet ik ook Nederlands proberen. 😭 Maar nu serieus... Gefeliciteerd met je verjaardag! ❤️`,
+    sign:    "",
   },
   {
     lang:    "English",
-    message: `"Happy Birthday, ${BIRTHDAY_NAME}. Eighteen is the age where dreams stop being fantasies and start becoming your story. You are brilliant, radiant, and entirely unforgettable. The world is lucky to have you in it."`,
-    sign:    "— with all my love ✦",
+    message: `Woahhhh okayy, someone's as old as a fossil now lmao, now you can actually use your famous line<br>" I AM 18 " 😹 and sadly i can't get to say<br>" You still have a few days left "<br>Sed, but oh well... You owe me a party !!!`,
+    sign:    "",
   },
   {
     lang:    "नेपाली · Nepali",
-    message: `"जन्मदिनको धेरै धेरै शुभकामना, अवलाइन। अठार वर्षको उमेर त्यो हो जहाँ सपनाहरू कल्पना रहँदैनन्, तिम्रो कथा बन्न थाल्छन्। तिमी उज्यालो छौ, न्यानो छौ, र कहिल्यै बिर्सन नसकिने छौ। यो संसार तिमी भएकोमा भाग्यमानी छ।"`,
-    sign:    "— अशेष मायाका साथ ✦",
+    message: `Aabo hajur ta ka European vayera, pahila Dutch ra english ma lekhe ewta, ewta para kina vaane kei tha nepali birsinu bha ki? Bahahahahaha ikik malai tyo line pura maan parcha hehehe. Tara saachi ambooo di ta Kati thulo manche omggg 18?!! Ani aajai ek palta..<br>Happy Birthday!!!!`,
+    sign:    "",
   },
 ];
 
@@ -260,19 +260,53 @@ export const HIDDEN_LETTER = {
   // The whisper line shown before the dissolve
   whisperLine: "some things were never meant for a screen.",
 
-  // Fixed opening lines (do not change these)
-  openingLines: [
-    "My dearest Avline,",
-    "You told me once that you wished someone would write you a real letter.",
-    "I couldn't press paper into your hands through a screen — so I made the screen become paper instead.",
-    "Everything before this was the gift. This is the part that's only yours.",
-  ],
+  /**
+   * Deliberately empty. The letter below opens by saying this in
+   * Ari's own words, and the letter should not be introduced by
+   * anyone else's.
+   */
+  openingLines: [] as string[],
 
-  // ── YOUR REAL WORDS GO HERE ──────────────────────
-  // Add as many lines as you want. Each string = one line reveal.
+  // ── ARI'S WORDS. Do not edit these but for typos. ────────────────
+  // Each string is one line, revealed about 1.15s after the last.
   personalLines: [
-    "[ your real words, in your real voice ]",
-    "[ add more lines as needed ]",
+    "Well, once you told me you'd like someone to write you a letter.",
+    "Sadly, I can't really write one on a piece of paper and send it all the way to Belgium.",
+    "But I can make your screen become that letter.",
+    "So... here I am, writing that very letter.",
+    "I've never really been much of a writer. I don't claim to be one either. So I'm sorry if this letter isn't perfect.",
+    "Yeah... I wouldn't expect me to write a perfect letter, honestly.",
+    "But enough about me.",
+    "It's your day, after all.",
+    "Actually... before that... sorry for being selfish, let's talk about me for one last time.",
+    "I'm sorry that I'm not really good at showing how much you actually mean to me.",
+    "I'm pretty horrible at it.",
+    "And I've done some really stupid things that may have upset you, or hurt you... maybe both.",
+    "I ignored you.",
+    "And I'm sorry for that.",
+    "But okay...",
+    "Seriously though, that's enough about me 😭",
+    "It's your day after all...",
+    "18.",
+    "Crazy.",
+    "You're actually legal now.",
+    "Wow.",
+    "Hope you don't stop talking to me though.",
+    "Lmao 😹",
+    "Well... I don't wanna make you spend your entire day reading this",
+    "I want you to actually enjoy your birthday.",
+    "And besides, I feel like you've already read way too much.",
+    "I don't want your eyes to start hurting.",
+    "Or maybe you'll",
+    "blaming me for it. 😭",
+    "So...",
+    "I hope today is filled with happiness.",
+    "And more than anything, I hope this year is kinder to you than the last.",
+    "Because trust me...",
+    "I know how cruel last year was for you.",
+    "So...",
+    "For the last time..",
+    "Happy Birthday, Avline.",
   ],
 
   // Signature
