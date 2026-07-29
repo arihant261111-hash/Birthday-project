@@ -53,7 +53,8 @@ function applyStaticText() {
   // Hero
   setText("heroEyebrow",   HERO.eyebrow);
   setHTML("heroHeadline",  HERO.headline.replace("\n", "<br>"));
-  setText("heroPara",      HERO.body);
+  // paragraph breaks in the body are real breaks, not collapsed space
+  setHTML("heroPara",      HERO.body.replace(/\n/g, "<br><br>"));
 
   // Four words — eyebrow and sub-line are optional; when they are
   // empty the elements are removed so they leave no gap behind.

@@ -43,8 +43,8 @@ export const HERO = {
   eyebrow:  `For ${BIRTHDAY_NAME}`,
   headline: "Eighteen years of becoming\nsomeone unforgettable.",
 
-  /** The opening letter — shows below the headline. */
-  body: `You came into this world and changed the energy of every room you ever walked into. Eighteen years of laughing too loud, of caring too deeply, of being the kind of person poems are written about. This is not just a birthday — it is the beginning of everything you were always meant to become. And I have had the extraordinary privilege of watching it happen.`,
+  /** The opening letter — shows below the headline. Ari's words. */
+  body: `Insane, to think you’re already eighteen, omgg Miss Legal person. Yeah yeah, now you can say you’re a grown ass woman as much as you like and there’s nothing I can do about it 😞 but hey it’s fine I know how to drive and you don’t BAHAHAHHAHAHAH, so I have that over you hehehe.\nWell on a more serious note, it’s amazing to see you turn an age where your dreams start becoming reality.. Eighteen years full of bakchodi? And here I am witnessing it, really glad I got the chance!`,
 };
 
 // ─────────────────────────────────────────
