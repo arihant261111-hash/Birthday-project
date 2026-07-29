@@ -191,10 +191,10 @@ export const AUDIO_TRACKS = [
 export const LITTLE_THINGS = [
   { icon: "🌸", label: "Favourite Flower",  value: "Gerbera Daisies" },
   { icon: "🍜", label: "Favourite Food",    value: "Momos & Ramen" },
-  { icon: "🎨", label: "Favourite Colour",  value: "Deep Purple" },
-  { icon: "💫", label: "Favourite Memory",  value: "The day everything changed for the better" },
-  { icon: "🎵", label: "Favourite Artist",  value: "Something that sounds like her" },
-  { icon: "🌙", label: "Favourite Place",   value: "Wherever she feels most free" },
+  { icon: "🎨", label: "Favourite Colour",  value: "Purple" },
+  { icon: "💫", label: "Favourite Memory",  value: "The Ragebait game" },
+  { icon: "🎵", label: "Favourite Artist",  value: "Tribal Rain" },
+  { icon: "🌙", label: "Favourite Place",   value: "The Bed" },
   // ── ADD / REMOVE / REORDER CARDS FREELY ──────────────────────────
 ];
 
