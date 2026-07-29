@@ -1072,8 +1072,8 @@ h1, h2, h3, .unlock-headline, .hero-headline,
      a long word to the container animated the type over 0.6s — a
      layout property, reflowing every frame — instead of simply
      setting it. */
-  transition: opacity 0.6s ease, transform 0.6s ease,
-              color 0.6s ease, -webkit-text-stroke-color 0.6s ease;
+  transition: opacity 0.95s ease, transform 0.95s ease,
+              color 0.95s ease, -webkit-text-stroke-color 0.95s ease;
   transform: translateY(100%);
   opacity: 0;
 }
@@ -1084,10 +1084,13 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   opacity: 1;
   text-shadow: 0 0 60px var(--glow);
 }
+/* Each word takes its time, and waits longer before the next one
+   follows. They are her answer to a question — they should land one
+   at a time, not arrive as a list. */
 .word-reveal--1 .big-word.is-visible { transition-delay: 0s; }
-.word-reveal--2 .big-word.is-visible { transition-delay: 0.4s; }
-.word-reveal--3 .big-word.is-visible { transition-delay: 0.8s; }
-.word-reveal--4 .big-word.is-visible { transition-delay: 1.2s; }
+.word-reveal--2 .big-word.is-visible { transition-delay: 0.8s; }
+.word-reveal--3 .big-word.is-visible { transition-delay: 1.6s; }
+.word-reveal--4 .big-word.is-visible { transition-delay: 2.4s; }
 
 /* The question sits above the words now, so the rule that used to
    separate them belongs underneath it. */
