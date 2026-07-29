@@ -967,7 +967,7 @@ const LETTER_T = {
   flapOpen:       15600,   // flap rotates open
   letterRise:     16000,   // letter rises, envelope sinks
   textStart:      21000,   // first line of text (after 3s paper rest)
-  lineInterval:    1150,   // ms between each line appearing
+  lineInterval:    1400,   // ms between each line appearing
 };
 
 /* ════════════════════════════════════

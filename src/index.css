@@ -525,11 +525,16 @@ h1, h2, h3, .unlock-headline, .hero-headline,
 .food-doodle--momo2 { bottom: 30%; right: 3%; width: clamp(40px, 6vw, 70px); transform: rotate(20deg); }
 
 /* Polaroid grid */
+/* A real grid, not wrapped flex. Flex-wrap packed as many as would
+   fit and left the remainder centred on a short final row, so the
+   photographs never lined up with each other. Three fixed columns
+   means six sit as two even rows of three. */
 .polaroid-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-items: center;
+  align-items: start;
+  gap: 2rem 1.5rem;
   padding: 3rem clamp(1rem, 5vw, 4rem) 1rem;
   max-width: 1100px;
   margin: 0 auto;
@@ -538,7 +543,8 @@ h1, h2, h3, .unlock-headline, .hero-headline,
 }
 
 .polaroid {
-  width: clamp(170px, 22vw, 220px);
+  width: 100%;
+  max-width: 220px;
   background: #1e1a42;
   padding: 14px 14px 40px;
   border: 1px solid rgba(123,94,167,0.3);
@@ -552,8 +558,10 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   flex-shrink: 0;
 }
 
-.polaroid:nth-child(odd)  { margin-top: 1rem; }
-.polaroid:nth-child(even) { margin-top: -0.5rem; }
+/* No alternating margins. They staggered every other photograph
+   vertically, so nothing ever lined up with anything. The tilt
+   rotations stay — a transform does not move the layout box, so
+   they keep the scattered feel without breaking the rows. */
 
 .polaroid[data-tilt="-4"] { transform: rotate(-4deg); }
 .polaroid[data-tilt="3"]  { transform: rotate(3deg); }
@@ -1377,8 +1385,13 @@ button, [role="button"], .polaroid, .accordion-btn,
   .thing-floral { display: none; }
 
   /* ── Polaroids ── */
-  .polaroid      { width: clamp(145px, 42vw, 185px); }
-  .polaroid-grid { gap: 0.8rem; padding-left: 0.5rem; padding-right: 0.5rem; }
+  /* two rows of three will not fit a phone — three rows of two */
+  .polaroid      { max-width: 185px; }
+  .polaroid-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 0.8rem;
+    padding-left: 0.5rem; padding-right: 0.5rem;
+  }
 
   /* ── Things ── */
   .things-grid {

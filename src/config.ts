@@ -126,21 +126,8 @@ export const POLAROIDS = [
     caption: "wild and free ✦",
     tilt:    7,
   },
-  {
-    photo:   "",
-    emoji:   "☕",
-    bg:      "linear-gradient(135deg,#5c2a1a,#c89060)",
-    caption: "cozy afternoons ✦",
-    tilt:    -5,
-  },
-  {
-    photo:   "",
-    emoji:   "✨",
-    bg:      "linear-gradient(135deg,#1a1a5c,#8080e0)",
-    caption: "magic everywhere ✦",
-    tilt:    4,
-  },
-  // ── ADD MORE POLAROIDS BY COPYING A BLOCK ABOVE ───────────────────
+  // ── Six, so they fill two rows of three exactly. Adding a
+  //    seventh will leave one stranded on a row of its own. ────────
 ];
 
 // ─────────────────────────────────────────
