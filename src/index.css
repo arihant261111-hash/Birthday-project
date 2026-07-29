@@ -581,9 +581,12 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   z-index: 10;
 }
 
+/* Portrait, not square. Four of the six photographs are taller than
+   they are wide, and a 1:1 frame cut up to 44% off the tallest —
+   enough to lose a face. 4:5 keeps them nearly whole. */
 .polaroid-img {
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
 }
 .polaroid-placeholder {

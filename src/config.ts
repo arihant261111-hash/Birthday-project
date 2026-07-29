@@ -85,42 +85,42 @@ export const LANGUAGE_CARDS = [
  */
 export const POLAROIDS = [
   {
-    photo:   "",                // set to "/photos/photo1.jpg" to use a real image
+    photo:   "/photos/polaroid-1.jpg",                // set to "/photos/photo1.jpg" to use a real image
     emoji:   "🌸",
     bg:      "linear-gradient(135deg,#7b5ea7,#3d2a6e)",
     caption: "the very beginning ✦",
     tilt:    -4,
   },
   {
-    photo:   "",
+    photo:   "/photos/polaroid-2.png",
     emoji:   "🎂",
     bg:      "linear-gradient(135deg,#b89de0,#7b5ea7)",
     caption: "birthday girl ✦",
     tilt:    3,
   },
   {
-    photo:   "",
+    photo:   "/photos/polaroid-3.jpg",
     emoji:   "🌙",
     bg:      "linear-gradient(135deg,#3a1a6e,#9b7ec8)",
     caption: "late night dreams ✦",
     tilt:    -6,
   },
   {
-    photo:   "",
+    photo:   "/photos/polaroid-4.jpg",
     emoji:   "⭐",
     bg:      "linear-gradient(135deg,#2a4a7a,#6b8ec8)",
     caption: "shining always ✦",
     tilt:    5,
   },
   {
-    photo:   "",
+    photo:   "/photos/polaroid-5.png",
     emoji:   "🌺",
     bg:      "linear-gradient(135deg,#4a2a3a,#c87e9e)",
     caption: "in full bloom ✦",
     tilt:    -3,
   },
   {
-    photo:   "",
+    photo:   "/photos/polaroid-6.jpg",
     emoji:   "🍃",
     bg:      "linear-gradient(135deg,#2a5c3f,#7ec8a0)",
     caption: "wild and free ✦",
