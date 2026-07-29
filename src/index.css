@@ -533,7 +533,8 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   justify-items: center;
-  align-items: start;
+  /* stretch, so a two-line caption does not leave its row ragged */
+  align-items: stretch;
   gap: 2rem 1.5rem;
   padding: 3rem clamp(1rem, 5vw, 4rem) 1rem;
   max-width: 1100px;
@@ -546,7 +547,10 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   width: 100%;
   max-width: 220px;
   background: #1e1a42;
-  padding: 14px 14px 40px;
+  /* the bottom edge is now sized by the caption inside it */
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
   border: 1px solid rgba(123,94,167,0.3);
   box-shadow:
     0 4px 16px rgba(0,0,0,0.6),
@@ -601,11 +605,12 @@ h1, h2, h3, .unlock-headline, .hero-headline,
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
 }
 
+/* In normal flow, not absolutely positioned into a fixed strip. That
+   strip only had room for one line, so a caption that wrapped rode up
+   over the photograph. Now it takes the height it needs, at any
+   caption length and any screen width. */
 .polaroid-caption {
-  position: absolute;
-  bottom: 8px;
-  left: 14px;
-  right: 14px;
+  margin-top: 10px;
   text-align: center;
   font-family: 'Caveat', cursive;
   font-size: clamp(0.85rem, 2vw, 1.1rem);
