@@ -1610,11 +1610,16 @@ button, [role="button"], .polaroid, .accordion-btn,
    warm family, and every shadow on it is warm too — a neutral black
    shadow over this brown reads as grey, which made the triangles look
    like a different material from the envelope. */
+/* One sheet of paper, folded twice. All three faces are cut from the
+   same tone and separated only by the amount a fold actually changes
+   the light — the flap used to be the brightest thing on the
+   envelope, brighter than every part of the body behind it, which is
+   why it read as a different material rather than a fold. */
 .lo-env-body {
   position: absolute;
   inset: 0;
   border-radius: 6px;
-  background: linear-gradient(155deg, #2c2016 0%, #251b12 50%, #1f1610 100%);
+  background: linear-gradient(155deg, #282017 0%, #241c14 50%, #1f1811 100%);
   box-shadow:
     0 24px 64px rgba(18,11,5,0.65),
     inset 0 1px 0 rgba(190,150,100,0.12),
@@ -1627,8 +1632,8 @@ button, [role="button"], .polaroid, .accordion-btn,
   width: 0; height: 0;
   border-left: 150px solid transparent;
   border-right: 150px solid transparent;
-  /* the same paper as .lo-env-body's darkest stop, one step deeper */
-  border-bottom: 100px solid #241a11;
+  /* the front panel, folded up: sits between the body's mid and dark */
+  border-bottom: 100px solid #221a13;
   z-index: 1;
 }
 
@@ -1677,12 +1682,16 @@ button, [role="button"], .polaroid, .accordion-btn,
   width: 0; height: 0;
   border-left: 150px solid transparent;
   border-right: 150px solid transparent;
-  border-top: 100px solid #2e2116;
+  /* the flap, folded down over the front: the same paper, a shade
+     lighter than the panel beneath it and no lighter than the body */
+  border-top: 100px solid #262019;
   transform-origin: top center;
   transition: transform 1.1s cubic-bezier(0.5,0,0.3,1);
   z-index: 7;
   backface-visibility: hidden;
-  filter: drop-shadow(0 2px 3px rgba(24,15,7,0.42));
+  /* No drop-shadow here. A filter on a border-triangle renders the
+     whole element through an offscreen buffer for no gain, and
+     .lo-flap-shadow already casts the shadow this was imitating. */
 }
 .lo-flap.lo-open { transform: rotateX(178deg); }
 
